@@ -32,6 +32,20 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+# AdWords API gem.
+gem 'google-adwords-api', '~> 0.9.0'
+
+# Gem for OAuth authorization.
+gem 'oauth2'
+
+# Web Server
+gem 'thin'
+
+# Testing
+
+gem 'rspec'
+
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
