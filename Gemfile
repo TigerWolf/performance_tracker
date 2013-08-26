@@ -38,12 +38,15 @@ gem 'google-adwords-api', '~> 0.9.0'
 # Gem for OAuth authorization.
 gem 'oauth2'
 
-# Web Server
-gem 'thin'
+group :development do
+  # Web Server
+  gem 'thin'
+end
 
 # Testing
-
-gem 'rspec'
+group :test do
+  gem 'rspec'
+end
 
 
 # Use ActiveModel has_secure_password
