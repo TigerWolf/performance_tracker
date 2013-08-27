@@ -17,4 +17,15 @@
 //= require ink-ui.min
 //= require autoload
 //= require html5shiv
+//= require select2
 //= require_tree .
+
+$(function(){
+$("#tag_adder").select2({
+                createSearchChoice:function(term, data) { if ($(data).filter(function() { return this.text.localeCompare(term)===0; }).length===0) {return {id:term, text:term};} },
+                multiple: true,
+                data: [],//[{id: 0, text: 'story'},{id: 1, text: 'bug'},{id: 2, text: 'task'}]
+                maximumInputLength: 9
+            });
+});
+
