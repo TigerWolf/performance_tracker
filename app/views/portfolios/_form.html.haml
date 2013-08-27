@@ -25,10 +25,10 @@
         .control-group
           = f.label :campaigns
           .control
-            = f.text_area :campaigns, :placeholder => 'A list of campaign id (numbers only)', :id => 'tag_adder', :class => 'control'
+            = f.text_field :campaigns, :placeholder => 'A list of campaign id (numbers only)', :id => 'tag_adder', :class => 'control'
             %span.note Press Enter to add another Campaign ID    
       .actions
         .content-left
           = f.button :class => 'ink-button blue' do
             %i.icon-plus 
-            Add
+            Save
