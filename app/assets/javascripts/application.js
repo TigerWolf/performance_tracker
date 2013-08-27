@@ -13,4 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require ink.min
+//= require ink-ui.min
+//= require autoload
+//= require html5shiv
 //= require_tree .

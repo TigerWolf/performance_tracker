@@ -48,6 +48,12 @@ group :test do
   gem 'rspec'
 end
 
+# UI 
+
+gem 'ink2-rails', :path => '~/Development/ink2-rails' #github: 'TigerWolf/ink2-rails', ref: 'aa42f9415e2d29851fe9653c719364079cb3a0ab'
+gem 'font-awesome-rails'
+gem 'haml'
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
