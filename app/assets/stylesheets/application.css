@@ -9,5 +9,18 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require ink
+ *= require font-awesome 
  *= require_tree .
  */
+
+.box {
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 3px 0 #dddddd;
+  -moz-box-shadow: 0 2px 3px 0 #dddddd;
+  box-shadow: 0 2px 3px 0 #dddddd;
+  border: 1px solid #BBB;
+  background-color: #FFF;
+  padding: 1em;
+  margin-top: 1em;
+}
