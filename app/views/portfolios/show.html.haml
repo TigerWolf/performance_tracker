@@ -1,0 +1,18 @@
+.column-group
+  .box
+    %p#notice= notice
+    %p
+      %strong Name:
+      = @portfolio.name
+    %p
+      %strong Client:
+      = @portfolio.client_id
+    %p
+      %strong Montly budget:
+      = @portfolio.montly_budget
+    %p
+      %strong Campaigns:
+      = @portfolio.campaigns
+    .column-group
+      = link_to 'Edit', edit_portfolio_path(@portfolio), :class => 'ink-button blue'
+      = link_to 'Back', portfolios_path, :class => 'ink-button blue'
