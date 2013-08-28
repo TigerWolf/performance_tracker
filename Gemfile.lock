@@ -38,6 +38,7 @@ GEM
     arel (4.0.0)
     atomic (1.1.13)
     builder (3.1.4)
+    coderay (1.0.9)
     coffee-rails (4.0.0)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0.beta, < 5.0)
@@ -45,6 +46,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
+    curb (0.8.4)
     daemons (1.1.9)
     diff-lcs (1.2.4)
     erubis (2.7.0)
@@ -81,6 +83,7 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    method_source (0.8.2)
     mime-types (1.24)
     mini_portile (0.5.1)
     minitest (4.7.5)
@@ -98,6 +101,10 @@ GEM
       multi_xml (~> 0.5)
       rack (~> 1.2)
     polyglot (0.3.3)
+    pry (0.9.12.2)
+      coderay (~> 1.0.5)
+      method_source (~> 0.8)
+      slop (~> 3.4)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -149,6 +156,7 @@ GEM
       faraday (~> 0.8.1)
       jwt (>= 0.1.5)
       multi_json (>= 1.0.0)
+    slop (3.4.6)
     sprockets (2.10.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -183,6 +191,7 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 4.0.0)
+  curb
   font-awesome-rails
   google-adwords-api (~> 0.9.0)
   haml
@@ -190,6 +199,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-rails
   oauth2
+  pry
   rails (= 4.0.0)
   rspec
   sass-rails (~> 4.0.0)

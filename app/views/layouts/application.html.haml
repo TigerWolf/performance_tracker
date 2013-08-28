@@ -20,7 +20,8 @@
                   %i.icon-list
                   View Portfolio List
               %li.push-right
-                %a{:href => "#"} Logout  
+                =link_to login_logout_path do
+                  Logout  
         .column-group
           .space        
             = yield

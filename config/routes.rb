@@ -1,11 +1,18 @@
 PerformanceTracker::Application.routes.draw do
   resources :portfolios
 
+   get "home/index"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
+  get "login/prompt"
+  get "login/callback"
+  get "login/logout"  
+
   # You can have the root of your site routed with "root"
-  root 'application#index'
+  #root 'application#index'
+  root "home#index"
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

@@ -41,6 +41,7 @@ gem 'oauth2'
 group :development do
   # Web Server
   gem 'thin'
+  gem 'pry'
 end
 
 # Testing
@@ -55,6 +56,8 @@ gem 'font-awesome-rails'
 gem 'haml'
 gem 'select2-rails'
 
+
+gem 'curb'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
