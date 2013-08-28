@@ -34,12 +34,10 @@ class LoginController < ApplicationController
             :oauth2_verification_code => params[:code]
           }
       )
-      binding.pry
-      user_info_url = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=#{session[:token][:access_token]}"
-      http = Curl.get(user_info_url)
-      response = JSON.parse(http.body_str)
-      email = response[:email]
+
       # Set the user object from this email - either create a new user or grab existing.
+      create_or_login_user(session[:token][:access_token])
+
       flash.notice = 'Authorized successfully'
       redirect_to home_index_path
     rescue AdsCommon::Errors::OAuth2VerificationRequired => e
@@ -48,8 +46,17 @@ class LoginController < ApplicationController
     end
   end
 
+  def create_or_login_user(access_token)
+    http = Curl.get("https://www.googleapis.com/oauth2/v1/userinfo?access_token=#{access_token}")
+    response = JSON.parse(http.body_str)
+    user = User.create_or_login_with_oauth(response)
+    binding.pry
+    session[:user_id] = user.id
+    
+  end
+
   def logout()
-    [:selected_account, :token].each {|key| session.delete(key)}
+    [:selected_account, :token, :user_id].each {|key| session.delete(key)}
     redirect_to GOOGLE_LOGOUT_URL
   end
 end
