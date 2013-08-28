@@ -8,8 +8,9 @@
             prohibited this portfolio from being saved:
           %ul
             - @portfolio.errors.full_messages.each do |msg|
-              %li= msg
+              %li= msg        
       %fieldset
+        = f.hidden_field :user_id, :value => session[:user_id]
         .control-group
           = f.label :name
           .control
