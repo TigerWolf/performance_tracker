@@ -4,7 +4,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios
   # GET /portfolios.json
   def index
-    @portfolios = Portfolio.all
+    @portfolios = Portfolio.find_all_by_user_id(session[:user_id])
   end
 
   # GET /portfolios/1
@@ -69,6 +69,6 @@ class PortfoliosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def portfolio_params
-      params.require(:portfolio).permit(:name, :client_id, :montly_budget, :campaigns, :cost)
+      params.require(:portfolio).permit(:name, :client_id, :montly_budget, :campaigns, :cost, :user_id)
     end
 end
