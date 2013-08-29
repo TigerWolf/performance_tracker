@@ -1,4 +1,5 @@
 PerformanceTracker::Application.routes.draw do
+  get "portfolios/customer_list"  
   resources :portfolios
 
   get "home/index"
