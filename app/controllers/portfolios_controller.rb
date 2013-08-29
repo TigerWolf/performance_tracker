@@ -118,7 +118,24 @@ class PortfoliosController < ApplicationController
         end
         cache.set(customer_id, array.to_json)
       end
-      return JSON::parse(cache.get(customer_id))
+      results_array = JSON::parse(cache.get(customer_id))
+      if params[:q]
+        results_array = match_sort("text", params[:q], results_array)
+      end
+      return results_array
 
     end  
+
+    def sort_by_query(data, query)
+      data = data.sort{|x,y|x["text"] <=> y["text"]}
+      #binding.pry
+      i = data.index{|h| h["text"] == query}
+      h = data.delete_at i
+      data.unshift h
+    end   
+
+    def match_sort(key, value, arr)
+      top, bottom = arr.partition{|e| e[key] == value }
+      top.concat(bottom.sort{|a,b| b[key] <=> a[key]})
+    end     
 end

@@ -2,7 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 $ ->
-  $("#tag_adder").select2
+  tagAdderEl = $("#tag_adder")
+  tagAdderEl.select2
     createSearchChoice: (term, data) ->
       if $(data).filter(->
         @text.localeCompare(term) is 0
@@ -11,8 +12,16 @@ $ ->
         text: term
     multiple: true
     data: []
-    maximumInputLength: 9
-    tokenSeparators: [",", " "]
+    
+    ajax: 
+      dataType: 'json'
+      url: tagAdderEl.data 'url'
+      results: (data, page) ->
+        { results: data }
+      data: (term, page) ->
+        return { q: term, customer_id: $('#portfolio_client_id').val() }
+        #console.log(term)
+        # { method: "GetClientsByName", name: term }
 
     initSelection: (element, callback) ->
       tags = $(element).val().split(',')
@@ -30,5 +39,14 @@ $ ->
 
       for part in parts when $.isNumeric(part) # This is hacky but should check for numbers and text if needed
         callback { id: part, text: part } 
-      $('#s2id_list-tag_adder .select2-input').val(" ") # This is to fix the looping issue but doesnt work correctly - it puts in [object Object]
+
+  addAllEl = $("#add_all")
+  addAllEl.click ->
+    $.ajax(
+      dataType: 'json'
+      url: tagAdderEl.data 'url'
+      data:
+        { customer_id: $('#portfolio_client_id').val() }
+    ).done (data) ->
+      tagAdderEl.select2("data", data)
       
