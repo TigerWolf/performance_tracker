@@ -79,44 +79,17 @@ class PortfoliosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def portfolio_params
-      params.require(:portfolio).permit(:name, :client_id, :montly_budget, :campaigns, :cost, :user_id)
+      params.require(:portfolio).permit(:name, :client_id, :montly_budget, :campaigns, :user_id)
     end
 
     def request_customer_campaign_list(customer_id)
+
+      # TODO: Reimplement this in redis so that we can share this across
+      # the app, including the future calls to get the budgets
       cache = FileCache.new("campaign_list", "#{Rails.root}/cache", 1800,2)
 
       unless cache.get(customer_id).present?
-
-        api = get_adwords_api(customer_id)
-        service = api.service(:CampaignService, get_api_version())
-        selector = {
-          :fields => ['Id', 'Name', 'Status'],
-          :ordering => [{:field => 'Id', :sort_order => 'ASCENDING'}],
-          :paging => {:start_index => 0, :number_results => PAGE_SIZE}
-        }
-        # Get all the campaigns for this account.
-        selector = {
-          :fields => ['Id', 'Name'],
-          :paging => {
-            :start_index => 0,
-            :number_results => PAGE_SIZE
-          }
-        }    
-        result = nil
-        begin
-          result = service.get(selector)
-        rescue AdwordsApi::Errors::ApiException => e
-          logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
-          flash.now[:alert] = 'API request failed with an error, see logs for details'
-        end
-
-        array = []
-        if result[:entries].present?   
-          result[:entries].each do |entry|
-            array << { id: entry[:id], text: entry[:name] }
-          end
-        end
-        cache.set(customer_id, array.to_json)
+        cache.set(customer_id, get_campaign(customer_id).to_json)
       end
       results_array = JSON::parse(cache.get(customer_id))
       if params[:q]
@@ -126,16 +99,42 @@ class PortfoliosController < ApplicationController
 
     end  
 
-    def sort_by_query(data, query)
-      data = data.sort{|x,y|x["text"] <=> y["text"]}
-      #binding.pry
-      i = data.index{|h| h["text"] == query}
-      h = data.delete_at i
-      data.unshift h
-    end   
+    def get_campaign(customer_id)
+      # TODO: I would prefer to move all of the API calls to a service object or similar but the 
+      # problems is that it currently depends on too many ApplicationController methods and also
+      # needs params which is only avaliable in controllers
 
+      api = get_adwords_api(customer_id)
+      service = api.service(:CampaignService, get_api_version())
+      # Get all the campaigns for this account.
+      selector = {
+        :fields => ['Id', 'Name'],
+        :paging => {
+          :start_index => 0,
+          :number_results => PAGE_SIZE
+        }
+      }    
+      result = nil
+      begin
+        result = service.get(selector)
+      rescue AdwordsApi::Errors::ApiException => e
+        logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
+        flash.now[:alert] = 'API request failed with an error, see logs for details'
+      end
+
+      array = []
+      if result[:entries].present?   
+        result[:entries].each do |entry|
+          array << { id: entry[:id], text: entry[:name] }
+        end
+      end
+      array
+    end
+
+    # Put result at the top of the list if it is an exact match.
     def match_sort(key, value, arr)
       top, bottom = arr.partition{|e| e[key] == value }
       top.concat(bottom.sort{|a,b| b[key] <=> a[key]})
     end     
+
 end
