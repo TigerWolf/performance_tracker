@@ -14,7 +14,6 @@ class LoginController < ApplicationController
       begin
         token = api.authorize({:oauth2_callback => login_callback_url})
       rescue AdsCommon::Errors::OAuth2VerificationRequired => e
-        binding.pry
         # TODO: Fix this up in the future, possibly implement all of the OAuth rather than letting the client library handle it.
         #  this is not the best way to do it but a limitation of the client library - it doest not let you set the scope. (:oauth2_scope)
         e.oauth_url.query.tap do |url|
@@ -50,7 +49,6 @@ class LoginController < ApplicationController
     http = Curl.get("https://www.googleapis.com/oauth2/v1/userinfo?access_token=#{access_token}")
     response = JSON.parse(http.body_str)
     user = User.create_or_login_with_oauth(response)
-    binding.pry
     session[:user_id] = user.id
     
   end
