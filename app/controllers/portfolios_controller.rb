@@ -1,4 +1,5 @@
 class PortfoliosController < ApplicationController
+  PAGE_SIZE = 50
   before_action :set_portfolio, only: [:show, :edit, :update, :destroy]
 
   # GET /portfolios
@@ -61,6 +62,15 @@ class PortfoliosController < ApplicationController
     end
   end
 
+
+  # GET /portfolios/customer_list
+  def customer_list
+    respond_to do |format|
+      format.html { head :no_content }
+      format.json { render json: request_customer_campaign_list(params[:customer_id])}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_portfolio
@@ -71,4 +81,44 @@ class PortfoliosController < ApplicationController
     def portfolio_params
       params.require(:portfolio).permit(:name, :client_id, :montly_budget, :campaigns, :cost, :user_id)
     end
+
+    def request_customer_campaign_list(customer_id)
+      cache = FileCache.new("campaign_list", "#{Rails.root}/cache", 1800,2)
+
+      unless cache.get(customer_id).present?
+
+        api = get_adwords_api(customer_id)
+        service = api.service(:CampaignService, get_api_version())
+        selector = {
+          :fields => ['Id', 'Name', 'Status'],
+          :ordering => [{:field => 'Id', :sort_order => 'ASCENDING'}],
+          :paging => {:start_index => 0, :number_results => PAGE_SIZE}
+        }
+        # Get all the campaigns for this account.
+        selector = {
+          :fields => ['Id', 'Name'],
+          :paging => {
+            :start_index => 0,
+            :number_results => PAGE_SIZE
+          }
+        }    
+        result = nil
+        begin
+          result = service.get(selector)
+        rescue AdwordsApi::Errors::ApiException => e
+          logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
+          flash.now[:alert] = 'API request failed with an error, see logs for details'
+        end
+
+        array = []
+        if result[:entries].present?   
+          result[:entries].each do |entry|
+            array << { id: entry[:id], text: entry[:name] }
+          end
+        end
+        cache.set(customer_id, array.to_json)
+      end
+      return JSON::parse(cache.get(customer_id))
+
+    end  
 end
