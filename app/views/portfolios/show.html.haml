@@ -12,7 +12,7 @@
       = @portfolio.montly_budget
     %p
       %strong Campaigns:
-      = @portfolio.campaigns
+      = @portfolio.campaigns.split(",").join("\n")
     .column-group
       = link_to 'Edit', edit_portfolio_path(@portfolio), :class => 'ink-button blue'
       = link_to 'Back', portfolios_path, :class => 'ink-button blue'
