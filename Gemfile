@@ -38,12 +38,12 @@ gem 'oauth2'
 group :development do
   # Web Server
   gem 'thin'
-  gem 'pry'
 end
 
 # Testing
-group :test do
-  gem 'rspec'
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'pry'
 end
 
 # UI 
@@ -55,6 +55,8 @@ gem 'select2-rails'
 
 
 gem 'curb'
+
+gem 'filecache'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
