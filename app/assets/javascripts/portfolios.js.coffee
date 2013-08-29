@@ -20,16 +20,25 @@ $ ->
         { results: data }
       data: (term, page) ->
         return { q: term, customer_id: $('#portfolio_client_id').val() }
-        #console.log(term)
-        # { method: "GetClientsByName", name: term }
 
     initSelection: (element, callback) ->
       tags = $(element).val().split(',')
       data = []
-      for tag in tags
-        data.push { id: tag, text: tag }
-      
-      callback data
+      responseA = []
+
+      $.ajax(
+        dataType: 'json'
+        url: tagAdderEl.data 'url'
+        data:
+          { customer_id: $('#portfolio_client_id').val() }
+      ).done (response) ->
+        for tag in tags
+          string= ""
+          for elem in response
+            if elem.id.toString() == tag
+              string = elem.text  
+          data.push { id: tag, text: string }
+        callback data
 
     tokenizer: (input, selection, callback) ->
       # no comma no need to tokenize
