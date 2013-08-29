@@ -1,5 +1,5 @@
 class PortfoliosController < ApplicationController
-  PAGE_SIZE = 50
+  PAGE_SIZE = 500
   before_action :set_portfolio, only: [:show, :edit, :update, :destroy]
 
   # GET /portfolios
