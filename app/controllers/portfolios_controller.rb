@@ -105,7 +105,7 @@ class PortfoliosController < ApplicationController
       # needs params which is only avaliable in controllers
 
       api = get_adwords_api(customer_id)
-      service = api.service(:CampaignService, get_api_version())
+      service = api.service(:CampaignService, AdWordsConnection.version)
       # Get all the campaigns for this account.
       selector = {
         :fields => ['Id', 'Name'],
