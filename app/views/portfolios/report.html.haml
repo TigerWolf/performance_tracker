@@ -1,0 +1,29 @@
+%h1 Portfolio Performance Tracker
+.column-group
+  .box
+    .content-right
+      %i.icon-calendar 
+      =DateTime.parse(Date.today.to_s).strftime("%d %b")
+    .column-group
+      %table.ink-table
+        %thead
+          %tr
+            %th.content-left Name
+            %th.content-left ClientID
+            %th.content-left Montly budget
+            %th.content-left Spend so far (up to Yesterday)
+            %th.content-left Budget left per day
+            %th.content-left Difference
+        %tbody
+          - unless @portfolios.present?
+            %tr
+              %td{ :colspan => 8} No portfolios present
+          -else              
+            - @portfolios.each do |portfolio|
+              %tr
+                %td= portfolio.name
+                %td= portfolio.client_id
+                %td= number_to_currency(portfolio.montly_budget)
+                %td= number_to_currency(portfolio.cost)
+                %td= number_to_currency(portfolio.budget_left_per_day)
+                %td{:class => "ink-label "+portfolio.difference_class }= number_to_percentage(portfolio.difference)
