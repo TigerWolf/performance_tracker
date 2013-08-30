@@ -1,5 +1,6 @@
 PerformanceTracker::Application.routes.draw do
-  get "portfolios/customer_list"  
+  get "portfolios/customer_list"
+  get "portfolios/report"  
   resources :portfolios
 
   get "home/index"
@@ -8,6 +9,6 @@ PerformanceTracker::Application.routes.draw do
   get "login/callback"
   get "login/logout"  
 
-  root "home#index"
+  root "portfolios#report"
 
 end
