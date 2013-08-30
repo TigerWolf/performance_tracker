@@ -9,19 +9,21 @@
     %div.ink-grid
       %div.column-group
         %div.large-100
-          %nav.ink-navigation.space
-            %ul.menu.horizontal.rounded.shadowed.blue
-              %li
-                =link_to portfolios_path do
-                  %i.icon-list
-                  View Portfolio List
-              %li
-                =link_to new_portfolio_path do
-                  %i.icon-plus
-                  Add new Portfolio
-              %li.push-right
-                =link_to login_logout_path do
-                  Logout  
+          -if session[:user_id]
+            %nav.ink-navigation.space
+              %ul.menu.horizontal.rounded.shadowed.blue
+                %li
+                  =link_to portfolios_report_path do
+                    %i.icon-dashboard
+                    Performance Tracker
+                %li
+                  =link_to portfolios_path do
+                    %i.icon-reorder
+                    Portfolio List
+                %li.push-right
+                  =link_to login_logout_path do
+                    %i.icon-coffee
+                    Logout  
         .column-group
           .space        
             = yield
