@@ -120,7 +120,6 @@ class PortfoliosController < ApplicationController
           :number_results => PAGE_SIZE
         }
       }    
-      result = nil
       begin
         result = service.get(selector)
       rescue AdwordsApi::Errors::ApiException => e
@@ -173,8 +172,6 @@ class PortfoliosController < ApplicationController
           :number_results => PAGE_SIZE
         }
       }  
-
-      result = nil
       begin
         result = service.get(selector)
       rescue AdwordsApi::V201302::CampaignService::ApiException => e
