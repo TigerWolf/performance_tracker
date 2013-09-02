@@ -1,0 +1,27 @@
+!!!
+%html
+  %head
+    %title PerformanceTracker
+    = stylesheet_link_tag    "application", media: "all"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+  %body
+    %div.ink-grid
+      %div.column-group
+        %div.large-100
+          %nav.ink-navigation.space
+            %ul.menu.horizontal.rounded.shadowed.blue
+              %li
+                =link_to portfolios_path do
+                  %i.icon-list
+                  View Portfolio List
+              %li
+                =link_to new_portfolio_path do
+                  %i.icon-plus
+                  Add new Portfolio
+              %li.push-right
+                =link_to login_logout_path do
+                  Logout  
+        .column-group
+          .space        
+            = yield

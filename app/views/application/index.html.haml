@@ -1,0 +1,65 @@
+
+.box
+  %table.ink-table
+    %thead
+      %tr
+        %th.content-left Portfolio Name
+        %th.content-left Montly Budget
+        %th.content-left Difference %
+    %tfoot
+      %tr
+        %td{:colspan => "3", } 
+          %span.note This information is updated once per day.
+    %tbody
+      %tr
+        %td Flight Center Top 100
+        %td $5,000
+        %td
+          %p.ink-label.error.invert +20%
+      %tr
+        %td Flight Center Top 20
+        %td $2,000
+        %td
+          %p.ink-label.warning.invert -7%
+      %tr
+        %td Quick Beds
+        %td Sports duffle bag
+        %td +4%
+      %tr
+        %td ...
+        %td ...
+        %td ...
+
+.whitespace{ :style => "height:40px;" }
+%hr
+.whitespace{ :style => "height:40px;" }
+
+.column-group.gutters
+  .large-70
+    = form_for :portfolio, :html => {:class => 'ink-form box' } do |f|
+      %fieldset
+        .control-group
+          = f.label :name
+          .control
+            = f.text_field :name, :placeholder => 'Portfolio name'
+        .control-group
+          = f.label :client_id
+          .control
+            = f.text_field :client_id, :placeholder => 'Client ID (from google)'
+        .control-group
+          = f.label :montly_budget
+          .control
+            = f.text_field :montly_budget, :placeholder => 'Montly budget for this portfolio'
+        .control-group
+          = f.label :campaigns
+          .control
+            = f.text_area :campaigns, :placeholder => 'A list of campaign id (numbers only)', :id => 'tag_adder', :class => 'control'
+            %span.note Press Enter to add another Campaign ID
+        .actions
+          
+          .content-right
+            = f.button :class => 'ink-button blue' do
+              %i.icon-plus 
+              Add
+
+

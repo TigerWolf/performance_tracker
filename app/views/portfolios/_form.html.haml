@@ -1,0 +1,41 @@
+.column-group.gutters
+  .large-70
+    = form_for @portfolio, :html => {:class => 'ink-form box' } do |f|
+      - if @portfolio.errors.any?
+        #error_explanation
+          %h2
+            = pluralize(@portfolio.errors.count, "error")
+            prohibited this portfolio from being saved:
+          %ul
+            - @portfolio.errors.full_messages.each do |msg|
+              %li= msg        
+      %fieldset
+        = f.hidden_field :user_id, :value => session[:user_id]
+        .control-group
+          = f.label :name
+          .control
+            = f.text_field :name, :placeholder => 'Portfolio name'
+        .control-group
+          = f.label :client_id
+          .control
+            = f.text_field :client_id, :placeholder => 'Client ID (from google)'
+        .control-group
+          = f.label :montly_budget
+          .control
+            = f.text_field :montly_budget, :placeholder => 'Montly budget for this portfolio'
+        .control-group
+          = f.label :campaigns
+          .control
+            = f.text_field :campaigns, :placeholder => 'A list of campaign id (numbers only)', :id => 'tag_adder', :class => 'control', :'data-url' => portfolios_customer_list_path
+            %span.note Press Enter to add another Campaign ID    
+      .actions
+        .content-left
+          %a#add_all.ink-button.green{:href => "#"}
+            %i.icon-plus
+            Add All Campaigns
+          .note.quarter-space
+            %em This will delete all currently selected campaigns.
+        .content-right
+          = f.button :class => 'ink-button blue' do
+            %i.icon-plus 
+            Save

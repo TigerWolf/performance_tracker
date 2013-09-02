@@ -1,0 +1,34 @@
+// Place all the styles related to the Portfolios controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.box {
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 3px 0 #dddddd;
+  -moz-box-shadow: 0 2px 3px 0 #dddddd;
+  box-shadow: 0 2px 3px 0 #dddddd;
+  border: 1px solid #BBB;
+  background-color: #FFF;
+  padding: 1em;
+  margin-top: 1em;
+}
+
+#s2id_tag_adder {
+  width: 100%;
+}
+
+#s2id_tag_adder .select2-choices { 
+  border-radius: 4px;
+  padding: 8px 6px;
+  border: 1px solid #c4c4c4;
+  resize: none;
+  font-size: 14px;
+  background: #ffffff;
+  vertical-align: middle;  
+}
+
+#s2id_tag_adder .select2-input { 
+  font-family: Ubuntu, Arial, sans-serif;
+  padding: 0;
+  padding-left: 2px;
+}

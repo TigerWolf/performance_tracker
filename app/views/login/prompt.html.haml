@@ -1,0 +1,15 @@
+%h1 Authorization required
+.box
+  - if flash[:alert]
+    .ink-alert.basic
+      =flash[:alert]
+      %button.ink-dismiss
+        ×
+  - if flash[:notice]
+    .ink-alert.basic.success
+      =flash[:notice]
+      %button.ink-dismiss
+        ×
+  %p Please authorize with a google account first:
+  %p
+    %a{:href => @login_url, :class => 'ink-button blue'} Proceed

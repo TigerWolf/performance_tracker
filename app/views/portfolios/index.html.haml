@@ -1,0 +1,32 @@
+%h1 Listing portfolios
+.column-group
+  .box
+    .column-group
+      %table.ink-table
+        %thead
+          %tr
+            %th Name
+            %th Client
+            %th Montly budget
+            %th Campaigns
+            %th Cost
+            %th
+            %th
+            %th
+        %tbody
+          - unless @portfolios.present?
+            %tr
+              %td{ :colspan => 8} No portfolios present
+          -else              
+            - @portfolios.each do |portfolio|
+              %tr
+                %td= portfolio.name
+                %td= portfolio.client_id
+                %td= portfolio.montly_budget
+                %td= portfolio.campaigns
+                %td= portfolio.cost
+                %td= link_to 'Show', portfolio
+                %td= link_to 'Edit', edit_portfolio_path(portfolio)
+                %td= link_to 'Destroy', portfolio, method: :delete, data: { confirm: 'Are you sure?' }
+      .column-group
+        = link_to 'New Portfolio', new_portfolio_path, :class => 'ink-button blue'
