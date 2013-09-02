@@ -157,7 +157,7 @@ class PortfoliosController < ApplicationController
       unless cache.get(portfolio.id).present?
 
         api = create_adwords_api(portfolio.client_id)
-        service = api.service(:CampaignService, get_api_version())
+        service = api.service(:CampaignService, AdWordsConnection.version)
         # Get all the campaigns for this account.
         d = Date.today
         start_date = DateTime.parse(d.beginning_of_month.to_s).strftime("%Y%m%d")
