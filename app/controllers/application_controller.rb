@@ -29,6 +29,12 @@ class ApplicationController < ActionController::Base
     return !token.nil?
   end
 
+  # Returns an API object.
+  def get_adwords_api()
+    @api ||= create_adwords_api()
+    return @api
+  end  
+
   # Creates an instance of AdWords API class. Uses a configuration file and
   # Rails config directory.
   def create_adwords_api(customer_id=nil)
