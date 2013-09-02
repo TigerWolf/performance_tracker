@@ -2,15 +2,15 @@
 .column-group
   .box
     .column-group
+      = link_to 'New Portfolio', new_portfolio_path, :class => 'ink-button blue'  
+    .column-group
       %table.ink-table
         %thead
           %tr
-            %th Name
-            %th Client
-            %th Montly budget
-            %th Campaigns
-            %th Cost
-            %th
+            %th.content-left Name
+            %th.content-left ClientID
+            %th.content-left Montly budget
+            %th.content-left Cost
             %th
             %th
         %tbody
@@ -23,10 +23,13 @@
                 %td= portfolio.name
                 %td= portfolio.client_id
                 %td= portfolio.montly_budget
-                %td= portfolio.campaigns
                 %td= portfolio.cost
-                %td= link_to 'Show', portfolio
-                %td= link_to 'Edit', edit_portfolio_path(portfolio)
-                %td= link_to 'Destroy', portfolio, method: :delete, data: { confirm: 'Are you sure?' }
-      .column-group
-        = link_to 'New Portfolio', new_portfolio_path, :class => 'ink-button blue'
+                %td.large-5
+                  = link_to edit_portfolio_path(portfolio), {:class => 'ink-button', :style => 'padding: 0 5px;'} do
+                    Edit
+                    %i.icon-wrench
+                %td.large-5
+                  = link_to portfolio, {method: :delete, data: { confirm: 'Are you sure?' },:class => 'ink-button', :style => 'padding: 0 5px;'} do
+                    Destroy
+                    %i.icon-ban-circle
+

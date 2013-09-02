@@ -10,11 +10,6 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Returns the API version in use.
-  def get_api_version()
-    return :v201302
-  end
-
   # Returns currently selected account.
   def selected_account()
     @selected_account ||= session[:selected_account]
@@ -32,12 +27,6 @@ class ApplicationController < ActionController::Base
     token = session[:token]
     redirect_to login_prompt_path if token.nil?
     return !token.nil?
-  end
-
-  # Returns an API object.
-  def get_adwords_api(customer_id=nil)
-    @api ||= create_adwords_api(customer_id)
-    return @api
   end
 
   # Creates an instance of AdWords API class. Uses a configuration file and

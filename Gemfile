@@ -48,7 +48,7 @@ end
 
 # UI 
 
-gem 'ink2-rails', :path => '~/Development/ink2-rails' #github: 'TigerWolf/ink2-rails', ref: 'aa42f9415e2d29851fe9653c719364079cb3a0ab'
+gem 'ink2-rails', github: 'mutablestate/ink2-rails'
 gem 'font-awesome-rails'
 gem 'haml'
 gem 'select2-rails'
@@ -57,6 +57,8 @@ gem 'select2-rails'
 gem 'curb'
 
 gem 'filecache'
+
+gem 'draper'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
