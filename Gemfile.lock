@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/TigerWolf/ink2-rails.git
-  revision: aa42f9415e2d29851fe9653c719364079cb3a0ab
-  ref: aa42f9415e2d29851fe9653c719364079cb3a0ab
+  revision: ac5714356daa7091391924633c42a0cac3f0c43b
+  ref: ac5714356daa7091391924633c42a0cac3f0c43b
   specs:
     ink2-rails (0.1.2)
       rails
