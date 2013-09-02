@@ -90,12 +90,11 @@ class PortfoliosController < ApplicationController
     end
 
     def request_customer_campaign_list(customer_id)
-
       # TODO: Reimplement this in redis so that we can share this across
       # the app, including the future calls to get the budgets
       cache = FileCache.new("campaign_list", "#{Rails.root}/cache", 18000, 2) # 5 hours cache
 
-      unless cache.get(customer_id).present?
+      unless cache.get(customer_id).present? # If cache expired
         cache.set(customer_id, get_campaigns(customer_id).to_json)
       end
       results_array = JSON::parse(cache.get(customer_id))
@@ -138,66 +137,66 @@ class PortfoliosController < ApplicationController
       array
     end
 
-
     def calculate_portfolio_costs(portfolio)
-      # TODO: I would prefer to move all of the API calls to a service object or similar but the 
-      # problems is that it currently depends on too many ApplicationController methods and also
-      # needs params which is only avaliable in controllers
-
-      # TODO: Reimplement this in redis so that we can share this across
+      # TODO: Reimplement this in redis so that we can share this key value store across
       # the app, including the future calls to get the budgets
       cache = FileCache.new("portfolio_cost", "#{Rails.root}/cache", 18000, 2) # 5 hours cache
 
-      unless cache.get(portfolio.id).present?
-
-        api = create_adwords_api(portfolio.client_id)
-        service = api.service(:CampaignService, AdWordsConnection.version)
-        # Get all the campaigns for this account.
-        d = Date.today
-        start_date = DateTime.parse(d.beginning_of_month.to_s).strftime("%Y%m%d")
-        end_date = DateTime.parse(d.yesterday.to_s).strftime("%Y%m%d")
-
-        campaign_id_array = portfolio.campaigns.split(',')
-
-        # Get all the campaigns for this account.
-        selector = {
-          :fields => ['Id', 'Name', 'Status', 'Impressions', 'Clicks', 'Cost', 'Ctr'],
-          :predicates => [
-            {:field => 'Impressions', :operator => 'GREATER_THAN', :values => [0]},
-            {:field => 'Id', :operator => 'IN', :values => campaign_id_array}
-          ],
-          :date_range => {:min => start_date, :max => end_date},
-          :paging => {
-            :start_index => 0,
-            :number_results => PAGE_SIZE
-          }
-        }  
-
-        result = nil
-        begin
-          result = service.get(selector)
-        rescue AdwordsApi::V201302::CampaignService::ApiException => e
-          # If any of the errors are CUSTOMER_NOT_FOUND - then return 0
-          # TODO: Log this error and show it to the user so they can correct the customer id
-          not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
-          unless not_found.nil?
-            return 0
-          end
-        rescue AdwordsApi::Errors::ApiException => e
-          logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
-          flash.now[:alert] = 'API request failed with an error, see logs for details'
-        end
-
-        cost = 0
-        if result.try(:entries).present?   
-          result[:entries].each do |entry|
-            cost += entry[:campaign_stats][:cost][:micro_amount]
-          end
-        end
-        cache.set(portfolio.id,PortfoliosHelper.to_deci(cost).to_json)
+      unless cache.get(portfolio.id).present? # If cache expired
+        portfolio_cost = PortfoliosHelper.to_deci(fetch_campaigns_cost(portfolio))
+        cache.set(portfolio.id,portfolio_cost.to_json)
       end
       cache.get(portfolio.id)
     end    
+
+    def fetch_campaigns_cost(portfolio)
+      # TODO: I would prefer to move all of the API calls to a service object or similar but the 
+      # problems is that it currently depends on too many ApplicationController methods and also
+      # needs params which is only avaliable in controllers  
+      api = create_adwords_api(portfolio.client_id)
+      service = api.service(:CampaignService, AdWordsConnection.version)
+      # Get all the campaigns for this account.
+      start_date, end_date = PortfolioSupport::AdwordsCampaignQuery.dates
+
+      campaign_id_array = portfolio.campaigns.split(',')
+
+      # Get all the campaigns for this account.
+      selector = {
+        :fields => ['Id', 'Name', 'Status', 'Impressions', 'Clicks', 'Cost', 'Ctr'],
+        :predicates => [
+          {:field => 'Impressions', :operator => 'GREATER_THAN', :values => [0]},
+          {:field => 'Id', :operator => 'IN', :values => campaign_id_array}
+        ],
+        :date_range => {:min => start_date, :max => end_date},
+        :paging => {
+          :start_index => 0,
+          :number_results => PAGE_SIZE
+        }
+      }  
+
+      result = nil
+      begin
+        result = service.get(selector)
+      rescue AdwordsApi::V201302::CampaignService::ApiException => e
+        # If any of the errors are CUSTOMER_NOT_FOUND - then return 0
+        # TODO: Log this error and show it to the user so they can correct the customer id
+        not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
+        unless not_found.nil?
+          return 0
+        end
+      rescue AdwordsApi::Errors::ApiException => e
+        logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
+        flash.now[:alert] = 'API request failed with an error, see logs for details'
+      end
+
+      cost = 0
+      if result.try(:entries).present?   
+        result[:entries].each do |entry|
+          cost += entry[:campaign_stats][:cost][:micro_amount]
+        end
+      end
+      cost
+    end
 
     # Put result at the top of the list if it is an exact match.
     def match_sort(key, value, arr)
