@@ -3,7 +3,9 @@ class Portfolio < ActiveRecord::Base
 
   def invalidate_cache
     cache = FileCache.new("portfolio_cost", "#{Rails.root}/cache", 1800,2)
-    cache.delete(self.id)
+    if cache.get(self.id).present? # If cache exists    
+      cache.delete(self.id)
+    end
 
   end
 end
