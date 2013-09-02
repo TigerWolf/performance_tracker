@@ -34,9 +34,10 @@ gem 'google-adwords-api', '~> 0.9.0'
 # Gem for OAuth authorization.
 gem 'oauth2'
 
+# Web Server
+gem 'thin'
+
 group :development do
-  # Web Server
-  gem 'thin'
 end
 
 # Testing
