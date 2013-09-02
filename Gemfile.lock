@@ -1,5 +1,6 @@
-PATH
-  remote: ~/Development/ink2-rails
+GIT
+  remote: git://github.com/mutablestate/ink2-rails.git
+  revision: 05575c2d3d33412a7de813dbd9f635a39243a6db
   specs:
     ink2-rails (0.1.2)
       rails
