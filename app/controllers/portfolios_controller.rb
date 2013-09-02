@@ -20,12 +20,6 @@ class PortfoliosController < ApplicationController
     @portfolios.sort!{ |a,b| b.difference.to_i.abs <=> a.difference.to_i.abs }
   end  
 
-  # GET /portfolios/1
-  # GET /portfolios/1.json
-  def show
-    # REMOVE THIS
-  end
-
   # GET /portfolios/new
   def new
     @portfolio = Portfolio.new
