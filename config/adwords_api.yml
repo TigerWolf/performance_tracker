@@ -9,8 +9,8 @@
   # Set the OAuth2 client id and secret. Register your application here to
   # obtain these values:
   #   https://code.google.com/apis/console#access
-  :oauth2_client_id: 766141880059-2u5nghieg243rr3j7agrr5h52urgsaon.apps.googleusercontent.com
-  :oauth2_client_secret: gx2npsd8eWxQVdRqs0Cz2-cm
+  :oauth2_client_id: 766141880059-p8a7714f8udbi2h14ndnm477gde23q2j.apps.googleusercontent.com
+  :oauth2_client_secret: L_5c3lkX0pdlUQxwf6wt4cv0
   # Optional, see: https://developers.google.com/accounts/docs/OAuth2WebServer
   #:oauth2_state: INSERT_OAUTH2_STATE_HERE
   #:oauth2_access_type: INSERT_OAUTH2_ACCESS_TYPE_HERE
