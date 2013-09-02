@@ -93,7 +93,7 @@ class PortfoliosController < ApplicationController
 
       # TODO: Reimplement this in redis so that we can share this across
       # the app, including the future calls to get the budgets
-      cache = FileCache.new("campaign_list", "#{Rails.root}/cache", 18000,2)
+      cache = FileCache.new("campaign_list", "#{Rails.root}/cache", 18000, 2)
 
       unless cache.get(customer_id).present?
         cache.set(customer_id, get_campaigns(customer_id).to_json)
@@ -146,7 +146,7 @@ class PortfoliosController < ApplicationController
 
       # TODO: Reimplement this in redis so that we can share this across
       # the app, including the future calls to get the budgets
-      cache = FileCache.new("portfolio_cost", "#{Rails.root}/cache", 18000,2)
+      cache = FileCache.new("portfolio_cost", "#{Rails.root}/cache", 18000, 2)
 
       unless cache.get(portfolio.id).present?
 
