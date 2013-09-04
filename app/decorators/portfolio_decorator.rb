@@ -4,7 +4,7 @@ class PortfolioDecorator < Draper::Decorator
   def difference
     if object.cost.present? && object.cost.to_i > 0 && object.montly_budget.to_f > 0 
       days_in_month = Time.days_in_month(Time.now.month)
-      days_so_far_this_month = Time.now.day
+      days_so_far_this_month = Date.yesterday.day
       daily_budget = object.montly_budget.to_f/days_in_month
       current_target = daily_budget*days_so_far_this_month
       difference = current_target - object.cost.to_f
@@ -26,7 +26,7 @@ class PortfolioDecorator < Draper::Decorator
 
   def budget_left_per_day
     #TODO - Need to ensure that float operations are done correctly.
-    d = Date.today
+    d = Date.yesterday
     (object.cost.to_i - object.montly_budget.to_i)/(d.day.to_i - d.end_of_month.day.to_i)
   end
 
