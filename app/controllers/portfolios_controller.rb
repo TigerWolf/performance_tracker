@@ -187,10 +187,8 @@ class PortfoliosController < ApplicationController
       end
 
       cost = 0
-      if result.try(:entries).present?   
-        result[:entries].each do |entry|
-          cost += entry[:campaign_stats][:cost][:micro_amount]
-        end
+      result.fetch(:entries, []).each do |entry|
+        cost += entry[:campaign_stats][:cost][:micro_amount]
       end
       cost
     end
