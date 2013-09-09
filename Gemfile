@@ -43,12 +43,13 @@ end
 # Testing
 group :development, :test do
   # Use sqlite3 as the database for Active Record
-  gem 'sqlite3'  
+  gem 'sqlite3'
   gem 'rspec-rails'
   gem 'pry'
+  gem 'timecop'
 end
 
-# UI 
+# UI
 
 gem 'ink2-rails', github: 'TigerWolf/ink2-rails', ref: 'ac5714356daa7091391924633c42a0cac3f0c43b'
 gem 'font-awesome-rails'
