@@ -98,8 +98,8 @@ class PortfoliosController < ApplicationController
         cache.set(customer_id, get_campaigns(customer_id).to_json)
       end
       results_array = JSON::parse(cache.get(customer_id))
-      if params[:q]
-        results_array = match_sort("text", params[:q], results_array)
+      if params[:q].present?
+        results_array = search_sort(params[:q], results_array)
       end
       return results_array
 
@@ -185,10 +185,18 @@ class PortfoliosController < ApplicationController
       cost
     end
 
-    # Put result at the top of the list if it is an exact match.
-    def match_sort(key, value, arr)
-      top, bottom = arr.partition{|e| e[key] == value }
-      top.concat(bottom.sort{|a,b| b[key] <=> a[key]})
+    # Only display exact and partial matches (2 chars needed)
+    def search_sort(term, records)
+      exact_matches   = []
+      partial_matches = []
+      records.each do |record|
+        if term == record["text"].downcase
+          exact_matches << record
+        elsif  term.slice(0, 2) == record["text"] .slice(0, 2)
+          partial_matches << record
+        end
+      end
+      sorted = exact_matches + partial_matches
     end
 
 end

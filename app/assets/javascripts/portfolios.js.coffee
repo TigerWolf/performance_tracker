@@ -4,16 +4,9 @@
 $ ->
   tagAdderEl = $("#tag_adder")
   tagAdderEl.select2
-    createSearchChoice: (term, data) ->
-      if $(data).filter(->
-        @text.localeCompare(term) is 0
-      ).length is 0
-        id: term
-        text: term
     multiple: true
     data: []
-    
-    ajax: 
+    ajax:
       dataType: 'json'
       url: tagAdderEl.data 'url'
       results: (data, page) ->
@@ -36,7 +29,7 @@ $ ->
           string= ""
           for elem in response
             if elem.id.toString() == tag
-              string = elem.text  
+              string = elem.text
           data.push { id: tag, text: string }
         callback data
 
@@ -47,7 +40,7 @@ $ ->
       data = []
 
       for part in parts when $.isNumeric(part) # This is hacky but should check for numbers and text if needed
-        callback { id: part, text: part } 
+        callback { id: part, text: part }
 
   addAllEl = $("#add_all")
   addAllEl.click ->
@@ -58,4 +51,4 @@ $ ->
         { customer_id: $('#portfolio_client_id').val() }
     ).done (data) ->
       tagAdderEl.select2("data", data)
-      
+
