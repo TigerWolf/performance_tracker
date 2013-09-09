@@ -10,7 +10,7 @@ class PortfolioDecorator < Draper::Decorator
       daily_budget            = object.montly_budget.to_f / days_in_month
       current_target          = daily_budget * days_so_far_this_month
       difference              = current_target - object.cost.to_f
-      -((difference.to_f/current_target) * 100).round # Calculate percentace and then inverse
+      -((difference.to_f/current_target) * 100).round(2) # Calculate percentace and then inverse
     else
       0
     end
@@ -28,7 +28,7 @@ class PortfolioDecorator < Draper::Decorator
 
   def budget_left_per_day
     d = Date.yesterday
-    (object.cost.to_f - object.montly_budget.to_f)/(d.day.to_i - d.end_of_month.day.to_i)
+    ((object.cost.to_f - object.montly_budget.to_f)/(d.day.to_i - d.end_of_month.day.to_i)).round(2)
   end
 
 end
