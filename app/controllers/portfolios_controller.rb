@@ -1,6 +1,6 @@
 
 class PortfoliosController < ApplicationController
-  PAGE_SIZE = 500
+
   before_action :set_portfolio, only: [:show, :edit, :update, :destroy]
 
   # GET /portfolios
@@ -18,7 +18,7 @@ class PortfoliosController < ApplicationController
       portfolio.save!
     end
     @portfolios.sort!{ |a,b| b.difference.to_i.abs <=> a.difference.to_i.abs }
-  end  
+  end
 
   # GET /portfolios/new
   def new
@@ -98,15 +98,15 @@ class PortfoliosController < ApplicationController
         cache.set(customer_id, get_campaigns(customer_id).to_json)
       end
       results_array = JSON::parse(cache.get(customer_id))
-      if params[:q]
-        results_array = match_sort("text", params[:q], results_array)
+      if params[:q].present?
+        results_array = PortfoliosHelper.search_sort(params[:q], results_array)
       end
       return results_array
 
-    end  
+    end
 
     def get_campaigns(customer_id)
-      # TODO: I would prefer to move all of the API calls to a service object or similar but the 
+      # TODO: I would prefer to move all of the API calls to a service object or similar but the
       # problems is that it currently depends on too many ApplicationController methods and also
       # needs params which is only avaliable in controllers
 
@@ -114,12 +114,8 @@ class PortfoliosController < ApplicationController
       service = api.service(:CampaignService, AdWordsConnection.version)
       # Get all the campaigns for this account.
       selector = {
-        :fields => ['Id', 'Name'],
-        :paging => {
-          :start_index => 0,
-          :number_results => PAGE_SIZE
-        }
-      }    
+        :fields => ['Id', 'Name']
+      }
       begin
         result = service.get(selector)
       rescue AdwordsApi::Errors::ApiException => e
@@ -128,7 +124,7 @@ class PortfoliosController < ApplicationController
       end
 
       array = []
-      if result[:entries].present?   
+      if result[:entries].present?
         result[:entries].each do |entry|
           array << { id: entry[:id], text: entry[:name] }
         end
@@ -146,12 +142,12 @@ class PortfoliosController < ApplicationController
         cache.set(portfolio.id,portfolio_cost.to_json)
       end
       cache.get(portfolio.id)
-    end    
+    end
 
     def fetch_campaigns_cost(portfolio)
-      # TODO: I would prefer to move all of the API calls to a service object or similar but the 
+      # TODO: I would prefer to move all of the API calls to a service object or similar but the
       # problems is that it currently depends on too many ApplicationController methods and also
-      # needs params which is only avaliable in controllers  
+      # needs params which is only avaliable in controllers
       api = create_adwords_api(portfolio.client_id)
       service = api.service(:CampaignService, AdWordsConnection.version)
       # Get all the campaigns for this account.
@@ -166,12 +162,8 @@ class PortfoliosController < ApplicationController
           {:field => 'Impressions', :operator => 'GREATER_THAN', :values => [0]},
           {:field => 'Id', :operator => 'IN', :values => campaign_id_array}
         ],
-        :date_range => {:min => start_date, :max => end_date},
-        :paging => {
-          :start_index => 0,
-          :number_results => PAGE_SIZE
-        }
-      }  
+        :date_range => {:min => start_date, :max => end_date}
+      }
       begin
         result = service.get(selector)
       rescue AdwordsApi::V201302::CampaignService::ApiException => e
@@ -193,10 +185,5 @@ class PortfoliosController < ApplicationController
       cost
     end
 
-    # Put result at the top of the list if it is an exact match.
-    def match_sort(key, value, arr)
-      top, bottom = arr.partition{|e| e[key] == value }
-      top.concat(bottom.sort{|a,b| b[key] <=> a[key]})
-    end     
 
 end

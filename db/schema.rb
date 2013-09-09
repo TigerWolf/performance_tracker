@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130828042936) do
+ActiveRecord::Schema.define(version: 20130909021202) do
 
   create_table "portfolios", force: true do |t|
     t.string   "name"
     t.string   "client_id"
     t.string   "montly_budget"
-    t.string   "campaigns"
+    t.text     "campaigns"
     t.string   "cost"
     t.datetime "created_at"
     t.datetime "updated_at"

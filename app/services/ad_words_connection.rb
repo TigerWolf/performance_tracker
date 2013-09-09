@@ -1,7 +1,7 @@
 class AdWordsConnection
 
   def self.version
-    return :v201302
+    return :v201306
   end
 
 end
