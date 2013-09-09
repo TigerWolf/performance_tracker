@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20130909021202) do
     t.string   "name"
     t.string   "client_id"
     t.string   "montly_budget"
-    t.text     "campaigns",     limit: 255
+    t.text     "campaigns"
     t.string   "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
