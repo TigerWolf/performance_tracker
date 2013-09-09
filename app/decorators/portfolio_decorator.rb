@@ -4,13 +4,13 @@ class PortfolioDecorator < Draper::Decorator
   # Inputs: cost, monthly_budget
   # Output: percentage of difference compared to target (e.g. positive means overspend)
   def difference
-    if object.cost.present? && object.cost.to_i > 0 && object.montly_budget.to_f > 0 
+    if object.cost.present? && object.cost.to_i > 0 && object.montly_budget.to_f > 0
       days_in_month           = Time.days_in_month(Time.now.month)
       days_so_far_this_month  = Date.yesterday.day
       daily_budget            = object.montly_budget.to_f / days_in_month
       current_target          = daily_budget * days_so_far_this_month
       difference              = current_target - object.cost.to_f
-      -((difference.to_f/current_target) * 100) # Calculate percentace and then inverse
+      -((difference.to_f/current_target) * 100).round # Calculate percentace and then inverse
     else
       0
     end
@@ -19,12 +19,12 @@ class PortfolioDecorator < Draper::Decorator
   def difference_class
     if object.decorate.difference.abs > 10
       "error"
-    elsif object.decorate.difference.abs > 5 
+    elsif object.decorate.difference.abs > 5
       "warning"
     else
       "success"
     end
-  end 
+  end
 
   def budget_left_per_day
     d = Date.yesterday
