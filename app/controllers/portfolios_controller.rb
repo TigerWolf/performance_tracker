@@ -89,23 +89,35 @@ class PortfoliosController < ApplicationController
       params.require(:portfolio).permit(:name, :client_id, :montly_budget, :campaigns, :user_id)
     end
 
-    def request_customer_campaign_list(customer_id)
-      # TODO: Reimplement this in redis so that we can share this across
-      # the app, including the future calls to get the budgets
-      cache = FileCache.new("campaign_list", "#{Rails.root}/cache", 18000, 2) # 5 hours cache
-
-      unless cache.get(customer_id).present? # If cache expired
-        cache.set(customer_id, get_campaigns(customer_id).to_json)
+    def fetch_campaigns_hash(customer_id)
+      namespaced = Redis::Namespace.new(customer_id, :redis => $redis)
+      unless namespaced.keys.present? # Check for existance of customer id namespace
+        refresh_campaigns(customer_id, namespaced) # Cache expired, refresh
       end
-      results_array = JSON::parse(cache.get(customer_id))
+      get_campaigns(namespaced)
+    end
+
+    def request_customer_campaign_list(customer_id)
+
+      campaign_hash = fetch_campaigns_hash(customer_id)
+
+      results_array = []
+      campaign_hash.each do |id, campaign|
+        results_array << { id: id, text: campaign["name"] }
+      end
+
+      #binding.pry
+
       if params[:q].present?
+        #binding.pry
         results_array = PortfoliosHelper.search_sort(params[:q], results_array)
       end
+      #return array
       return results_array
 
     end
 
-    def get_campaigns(customer_id)
+    def refresh_campaigns(customer_id, redis_namespace)
       # TODO: I would prefer to move all of the API calls to a service object or similar but the
       # problems is that it currently depends on too many ApplicationController methods and also
       # needs params which is only avaliable in controllers
@@ -113,74 +125,60 @@ class PortfoliosController < ApplicationController
       api = create_adwords_api(customer_id)
       service = api.service(:CampaignService, AdWordsConnection.version)
       # Get all the campaigns for this account.
+      start_date, end_date = PortfolioSupport::AdwordsCampaignQuery.dates
+
       selector = {
-        :fields => ['Id', 'Name']
+        :fields => ['Id', 'Name', 'Status', 'Impressions', 'Clicks', 'Cost', 'Ctr'],
+        :date_range => {:min => start_date, :max => end_date} # TODO: This will need to be defined elsewhere possibly.
       }
       begin
         result = service.get(selector)
       rescue AdwordsApi::Errors::ApiException => e
         logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
         flash.now[:alert] = 'API request failed with an error, see logs for details'
-      end
-
-      array = []
-      if result[:entries].present?
-        result[:entries].each do |entry|
-          array << { id: entry[:id], text: entry[:name] }
-        end
-      end
-      array
-    end
-
-    def calculate_portfolio_costs(portfolio)
-      # TODO: Reimplement this in redis so that we can share this key value store across
-      # the app, including the future calls to get the budgets
-      cache = FileCache.new("portfolio_cost", "#{Rails.root}/cache", 18000, 2) # 5 hours cache
-
-      unless cache.get(portfolio.id).present? # If cache expired
-        portfolio_cost = PortfoliosHelper.to_deci(fetch_campaigns_cost(portfolio))
-        cache.set(portfolio.id,portfolio_cost.to_json)
-      end
-      cache.get(portfolio.id)
-    end
-
-    def fetch_campaigns_cost(portfolio)
-      # TODO: I would prefer to move all of the API calls to a service object or similar but the
-      # problems is that it currently depends on too many ApplicationController methods and also
-      # needs params which is only avaliable in controllers
-      api = create_adwords_api(portfolio.client_id)
-      service = api.service(:CampaignService, AdWordsConnection.version)
-      # Get all the campaigns for this account.
-      start_date, end_date = PortfolioSupport::AdwordsCampaignQuery.dates
-
-      campaign_id_array = portfolio.campaigns.split(',')
-
-      # Get all the campaigns for this account.
-      selector = {
-        :fields => ['Id', 'Name', 'Status', 'Impressions', 'Clicks', 'Cost', 'Ctr'],
-        :predicates => [
-          {:field => 'Impressions', :operator => 'GREATER_THAN', :values => [0]},
-          {:field => 'Id', :operator => 'IN', :values => campaign_id_array}
-        ],
-        :date_range => {:min => start_date, :max => end_date}
-      }
-      begin
-        result = service.get(selector)
-      rescue AdwordsApi::V201302::CampaignService::ApiException => e
-        # If any of the errors are CUSTOMER_NOT_FOUND - then return 0
-        # TODO: Log this error and show it to the user so they can correct the customer id
         not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
         unless not_found.nil?
           return 0
         end
-      rescue AdwordsApi::Errors::ApiException => e
-        logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
-        flash.now[:alert] = 'API request failed with an error, see logs for details'
       end
 
+      redis_namespace.pipelined do
+        if result[:entries].present?
+          result[:entries].each do |entry|
+            redis_namespace.hset entry[:id], "name", entry[:name]
+            redis_namespace.hset entry[:id], "status", entry[:status]
+            redis_namespace.hset entry[:id], "clicks", entry[:campaign_stats][:clicks]
+            redis_namespace.hset entry[:id], "impressions", entry[:campaign_stats][:impressions]
+            redis_namespace.hset entry[:id], "ctr", entry[:campaign_stats][:ctr]
+            redis_namespace.hset entry[:id], "cost", entry[:campaign_stats][:cost][:micro_amount]
+          end
+        end
+      end
+    end
+
+    def get_campaigns(redis_namespace)
+
+      campaign_ids = redis_namespace.keys
+
+      campaign_hash = {}
+      campaign_ids.each do |campaign_id|
+        campaign_hash[campaign_id.to_i] = redis_namespace.hgetall campaign_id#, "name"
+      end
+
+      campaign_hash
+    end
+
+    def calculate_portfolio_costs(portfolio)
+      campaigns_hash = fetch_campaigns_hash(portfolio.client_id)
+      portfolio_cost = PortfoliosHelper.to_deci(calculate_campaigns_cost(campaigns_hash, portfolio))
+    end
+
+    def calculate_campaigns_cost(campaigns_hash, portfolio)
+
+      campaign_id_array = portfolio.campaigns.split(',')
       cost = 0
-      result.fetch(:entries, []).each do |entry|
-        cost += entry[:campaign_stats][:cost][:micro_amount]
+      campaigns_hash.each do |entry|
+        cost += entry.last["cost"].to_i
       end
       cost
     end
