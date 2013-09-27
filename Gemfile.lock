@@ -137,6 +137,9 @@ GEM
     rake (10.1.0)
     rdoc (3.12.2)
       json (~> 1.4)
+    redis (3.0.4)
+    redis-namespace (1.2.1)
+      redis (~> 3.0.0)
     request_store (1.0.5)
     rollbar (0.10.12)
       multi_json (~> 1.5)
@@ -225,6 +228,8 @@ DEPENDENCIES
   pry
   rails (= 4.0.0)
   rails_12factor
+  redis
+  redis-namespace
   rollbar
   rspec-rails
   sass-rails (~> 4.0.0)

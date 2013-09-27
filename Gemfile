@@ -68,6 +68,9 @@ gem 'filecache'
 gem 'draper'
 gem 'rollbar'
 
+gem 'redis'
+gem 'redis-namespace'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
