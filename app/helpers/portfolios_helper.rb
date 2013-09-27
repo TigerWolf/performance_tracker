@@ -10,10 +10,10 @@ module PortfoliosHelper
     exact_matches   = []
     partial_matches = []
     records.each do |record|
-      record["text"] = record["text"].downcase
-      if term == record["text"]
+      record[:text] = record[:text].downcase
+      if term == record[:text]
         exact_matches << record
-      elsif term.slice(0, 2) == record["text"].slice(0, 2)
+      elsif term.slice(0, 2) == record[:text].slice(0, 2)
         partial_matches << record
       end
     end
