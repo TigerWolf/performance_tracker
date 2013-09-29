@@ -10,5 +10,13 @@ class User < ActiveRecord::Base
     end
     user
   end
-  
+
+  def token
+    @token
+  end
+
+  def token=(token)
+    @token=token
+  end
+
 end

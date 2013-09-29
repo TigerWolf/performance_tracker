@@ -51,6 +51,9 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'pry'
   gem 'timecop'
+
+  # Rails panel
+  gem 'meta_request'
 end
 
 # UI
@@ -70,6 +73,9 @@ gem 'rollbar'
 
 gem 'redis'
 gem 'redis-namespace'
+
+gem 'rails-perftest'
+gem 'ruby-prof'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

@@ -6,5 +6,47 @@ module PortfolioSupport
         end_date = DateTime.parse(d.yesterday.to_s).strftime("%Y%m%d")
         [start_date, end_date]
       end
+
+      def self.refresh_campaigns(customer_id, redis_namespace, current_user)
+        api = AdWordsConnection.create_adwords_api(current_user.token, customer_id)
+        service = api.service(:CampaignService, AdWordsConnection.version)
+
+        start_date, end_date = dates
+
+        # Get all the campaigns and data for this month
+        selector = {
+          :fields => ['Id', 'Name', 'Status', 'Impressions', 'Clicks', 'Cost', 'Ctr'],
+          :date_range => {:min => start_date, :max => end_date} # TODO: This will need to be defined elsewhere possibly.
+        }
+        begin
+          result = service.get(selector)
+        rescue AdwordsApi::Errors::ApiException => e
+          logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
+          flash.now[:alert] = 'API request failed with an error, see logs for details'
+          not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
+          unless not_found.nil?
+            return 0
+          end
+        end
+
+        redis_namespace.pipelined do
+          if result[:entries].present?
+            result[:entries].each do |entry|
+              redis_namespace.hset entry[:id], "name", entry[:name]
+              redis_namespace.hset entry[:id], "status", entry[:status]
+              redis_namespace.hset entry[:id], "clicks", entry[:campaign_stats][:clicks]
+              redis_namespace.hset entry[:id], "impressions", entry[:campaign_stats][:impressions]
+              redis_namespace.hset entry[:id], "ctr", entry[:campaign_stats][:ctr]
+              redis_namespace.hset entry[:id], "cost", entry[:campaign_stats][:cost][:micro_amount]
+              # Set the expiry to one day.
+              #TODO: Set this to the time at the end of the day
+              redis_namespace.expire entry[:id], 86400
+            end
+          end
+        end
+
+
+
+      end
   end
 end
