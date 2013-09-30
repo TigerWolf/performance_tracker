@@ -7,6 +7,12 @@ module PortfolioSupport
         [start_date, end_date]
       end
 
+      def self.end_of_day_seconds
+        t = Time.now
+        now_in_seconds = t.hour * 3600 + t.min * 60
+        86400 - now_in_seconds
+      end
+
       def self.refresh_campaigns(customer_id, redis_namespace, current_user)
         api = AdWordsConnection.create_adwords_api(current_user.token, customer_id)
         service = api.service(:CampaignService, AdWordsConnection.version)
@@ -38,9 +44,9 @@ module PortfolioSupport
               redis_namespace.hset entry[:id], "impressions", entry[:campaign_stats][:impressions]
               redis_namespace.hset entry[:id], "ctr", entry[:campaign_stats][:ctr]
               redis_namespace.hset entry[:id], "cost", entry[:campaign_stats][:cost][:micro_amount]
-              # Set the expiry to one day.
-              #TODO: Set this to the time at the end of the day
-              redis_namespace.expire entry[:id], 86400
+              # Set the expiry to the seconds left in the day day.
+              #TODO: Be timezone aware - server time may not be sufficient.
+              redis_namespace.expire entry[:id], end_of_day_seconds
             end
           end
         end
