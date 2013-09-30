@@ -38,12 +38,12 @@ module PortfolioSupport
         redis_namespace.pipelined do
           if result[:entries].present?
             result[:entries].each do |entry|
-              redis_namespace.hset entry[:id], "name", entry[:name]
-              redis_namespace.hset entry[:id], "status", entry[:status]
-              redis_namespace.hset entry[:id], "clicks", entry[:campaign_stats][:clicks]
+              redis_namespace.hset entry[:id], "name",        entry[:name]
+              redis_namespace.hset entry[:id], "status",      entry[:status]
+              redis_namespace.hset entry[:id], "clicks",      entry[:campaign_stats][:clicks]
               redis_namespace.hset entry[:id], "impressions", entry[:campaign_stats][:impressions]
-              redis_namespace.hset entry[:id], "ctr", entry[:campaign_stats][:ctr]
-              redis_namespace.hset entry[:id], "cost", entry[:campaign_stats][:cost][:micro_amount]
+              redis_namespace.hset entry[:id], "ctr",         entry[:campaign_stats][:ctr]
+              redis_namespace.hset entry[:id], "cost",        entry[:campaign_stats][:cost][:micro_amount]
               # Set the expiry to the seconds left in the day day.
               #TODO: Be timezone aware - server time may not be sufficient.
               redis_namespace.expire entry[:id], end_of_day_seconds
