@@ -44,16 +44,24 @@ gem 'thin'
 group :development do
 end
 
+# group :test do
+#   gem 'webmock'
+# end
+
 # Testing
 group :development, :test do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
   gem 'rspec-rails'
+  gem 'rspec-mocks'
   gem 'pry'
   gem 'timecop'
 
   # Rails panel
   gem 'meta_request'
+
+
+  gem 'mock_redis'
 end
 
 # UI

@@ -99,6 +99,7 @@ GEM
     mime-types (1.24)
     mini_portile (0.5.1)
     minitest (4.7.5)
+    mock_redis (0.9.0)
     multi_json (1.7.9)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
@@ -233,6 +234,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-rails
   meta_request
+  mock_redis
   oauth2
   pg (>= 0.11.0)
   pry
@@ -242,6 +244,7 @@ DEPENDENCIES
   redis
   redis-namespace
   rollbar
+  rspec-mocks
   rspec-rails
   ruby-prof
   sass-rails (~> 4.0.0)
