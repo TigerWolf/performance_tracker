@@ -105,7 +105,6 @@ class PortfoliosController < ApplicationController
 
     def request_customer_campaign_list(customer_id)
       campaign_hash = get_campaigns(refresh_campaigns_get_name(customer_id))
-      #campaign_hash = fetch_campaigns_hash(customer_id)
 
       results_array = []
       campaign_hash.each do |id, campaign|
@@ -140,11 +139,8 @@ class PortfoliosController < ApplicationController
 
     def format_portfolio_cost(portfolio)
       costs_array = get_costs(refresh_campaigns_get_name(portfolio.client_id))
-      portfolio_cost = PortfoliosHelper.to_deci(calculate_campaigns_cost(costs_array, portfolio))
-    end
-
-    def calculate_campaigns_cost(campaigns_array, portfolio)
-      campaigns_array.reduce{|sum,x| sum.to_i + x.to_i }
+      campaign_cost = campaigns_array.reduce{|sum,x| sum.to_i + x.to_i }
+      PortfoliosHelper.to_deci(campaign_cost)
     end
 
 end
