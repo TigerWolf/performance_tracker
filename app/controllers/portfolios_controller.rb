@@ -79,7 +79,7 @@ class PortfoliosController < ApplicationController
     end
     respond_to do |format|
       format.html { head :no_content }
-      format.json { render json: request_customer_campaign_list(params[:customer_id])}
+      format.json { render json: format_campaign_list(params[:customer_id])}
     end
   end
 
@@ -95,7 +95,7 @@ class PortfoliosController < ApplicationController
     end
 
     # Returns: redis namespace
-    def refresh_campaigns_get_name(customer_id)
+    def refresh_redis_store(customer_id)
       namespaced = Redis::Namespace.new(customer_id, :redis => $redis)
       unless namespaced.keys.present? # Check for existance of customer id namespace/cache
         PortfolioSupport::AdwordsCampaignQuery.refresh_campaigns(customer_id, namespaced, current_user) # Cache expired, refresh
@@ -103,8 +103,8 @@ class PortfoliosController < ApplicationController
       namespaced
     end
 
-    def request_customer_campaign_list(customer_id)
-      campaign_hash = get_campaigns(refresh_campaigns_get_name(customer_id))
+    def format_campaign_list(customer_id)
+      campaign_hash = get_campaigns(refresh_redis_store(customer_id))
 
       results_array = []
       campaign_hash.each do |id, campaign|
@@ -138,7 +138,7 @@ class PortfoliosController < ApplicationController
     end
 
     def format_portfolio_cost(portfolio)
-      costs_array = get_costs(refresh_campaigns_get_name(portfolio.client_id))
+      costs_array = get_costs(refresh_redis_store(portfolio.client_id))
       campaign_cost = costs_array.reduce{|sum,x| sum.to_i + x.to_i }
       PortfoliosHelper.to_deci(campaign_cost)
     end
