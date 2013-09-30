@@ -128,8 +128,8 @@ class PortfoliosController < ApplicationController
     end
 
     # This method is purely here for performance - we get over a 50% performance increase by only getting the data we need
-    def get_costs(redis_namespace)
-      campaign_ids = redis_namespace.keys
+    def get_costs(redis_namespace, portfolio)
+      campaign_ids = portfolio.campaigns.split(',')
       result = redis_namespace.pipelined do
         campaign_ids.each do |campaign_id|
           redis_namespace.hget campaign_id, "cost"
@@ -138,7 +138,7 @@ class PortfoliosController < ApplicationController
     end
 
     def format_portfolio_cost(portfolio)
-      costs_array = get_costs(refresh_redis_store(portfolio.client_id))
+      costs_array = get_costs(refresh_redis_store(portfolio.client_id), portfolio)
       campaign_cost = costs_array.reduce{|sum,x| sum.to_i + x.to_i }
       PortfoliosHelper.to_deci(campaign_cost)
     end
