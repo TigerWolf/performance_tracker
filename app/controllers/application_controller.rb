@@ -12,18 +12,6 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Returns currently selected account.
-  def selected_account
-    @selected_account ||= session[:selected_account]
-    return @selected_account
-  end
-
-  # Sets current account to the specified one.
-  def selected_account=(new_selected_account)
-    @selected_account = new_selected_account
-    session[:selected_account] = @selected_account
-  end
-
   # Checks if we have a valid credentials.
   def authenticate
     token = session[:token]
