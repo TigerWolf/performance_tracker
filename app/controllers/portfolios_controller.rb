@@ -139,7 +139,7 @@ class PortfoliosController < ApplicationController
 
     def format_portfolio_cost(portfolio)
       costs_array = get_costs(refresh_campaigns_get_name(portfolio.client_id))
-      campaign_cost = campaigns_array.reduce{|sum,x| sum.to_i + x.to_i }
+      campaign_cost = costs_array.reduce{|sum,x| sum.to_i + x.to_i }
       PortfoliosHelper.to_deci(campaign_cost)
     end
 
