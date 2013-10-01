@@ -21,20 +21,20 @@ class Portfolio < ActiveRecord::Base
   end
 
   def aggregate_portfolio_cost(current_user)
-    costs_array = get_costs(PortfolioSupport::RedisQuery.refresh_redis_store(self.client_id, current_user), self)
-    campaign_cost = costs_array.reduce{|sum,x| sum.to_i + x.to_i }
+    campaign_cost = get_cost(PortfolioSupport::RedisQuery.refresh_redis_store(self.client_id, current_user), self)
     PortfoliosHelper.to_deci(campaign_cost)
   end
 
   private
 
-  def self.get_costs(redis_namespace, portfolio)
+  def self.get_cost(redis_namespace, portfolio)
     campaign_ids = portfolio.campaigns.split(',')
     result = redis_namespace.pipelined do
       campaign_ids.each do |campaign_id|
         redis_namespace.hget campaign_id, "cost"
       end
     end
+    result.reduce{|sum,x| sum.to_i + x.to_i }
   end
 
   def self.get_campaigns(redis_namespace)
