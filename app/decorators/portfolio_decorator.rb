@@ -28,6 +28,9 @@ class PortfolioDecorator < Draper::Decorator
 
   def budget_left_per_day
     d = Date.yesterday
+    if Date.today == Date.today.at_beginning_of_month
+      d = Date.today
+    end
     ((object.cost.to_f - object.montly_budget.to_f)/(d.day.to_i - d.end_of_month.day.to_i)).round(2)
   end
 

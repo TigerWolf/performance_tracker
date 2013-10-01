@@ -4,6 +4,11 @@ module PortfolioSupport
         d = Date.today
         start_date = DateTime.parse(d.beginning_of_month.to_s).strftime("%Y%m%d")
         end_date = DateTime.parse(d.yesterday.to_s).strftime("%Y%m%d")
+
+        # At the first day of the month - yesterday is actually last month
+        if d == d.at_beginning_of_month
+          end_date = start_date
+        end
         [start_date, end_date]
       end
 
@@ -27,12 +32,11 @@ module PortfolioSupport
         begin
           result = service.get(selector)
         rescue AdwordsApi::Errors::ApiException => e
-          logger.fatal("Exception occurred: %s\n%s" % [e.to_s, e.message])
-          flash.now[:alert] = 'API request failed with an error, see logs for details'
           not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
           unless not_found.nil?
             return 0
           end
+          raise e
         end
 
         redis_namespace.pipelined do

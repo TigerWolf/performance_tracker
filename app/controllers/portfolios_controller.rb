@@ -13,12 +13,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios/report.json
   def report
     @portfolios = Portfolio.where(user_id: session[:user_id]).decorate
-    Portfolio.transaction do # This reduces the amount of DB calls.
-      @portfolios.each do |portfolio|
-        portfolio.cost = format_portfolio_cost(portfolio) # Define this somewhere - possibly a service object or similar
-        portfolio.save!
-      end
-    end
+    Portfolio.refresh_costs(@portfolios, current_user)
     @portfolios.sort!{ |a,b| b.difference.to_i.abs <=> a.difference.to_i.abs }
   end
 
@@ -79,7 +74,13 @@ class PortfoliosController < ApplicationController
     end
     respond_to do |format|
       format.html { head :no_content }
-      format.json { render json: format_campaign_list(params[:customer_id])}
+      format.json do
+        porfolio_results = Portfolio.format_campaign_list(params[:customer_id], current_user)
+        if params[:q].present?
+          porfolio_results = PortfoliosHelper.search_sort(params[:q], porfolio_results)
+        end
+        render json: porfolio_results
+     end
     end
   end
 
@@ -92,55 +93,6 @@ class PortfoliosController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def portfolio_params
       params.require(:portfolio).permit(:name, :client_id, :montly_budget, :campaigns, :user_id)
-    end
-
-    # Returns: redis namespace
-    def refresh_redis_store(customer_id)
-      namespaced = Redis::Namespace.new(customer_id, :redis => $redis)
-      unless namespaced.keys.present? # Check for existance of customer id namespace/cache
-        PortfolioSupport::AdwordsCampaignQuery.refresh_campaigns(customer_id, namespaced, current_user) # Cache expired, refresh
-      end
-      namespaced
-    end
-
-    def format_campaign_list(customer_id)
-      campaign_hash = get_campaigns(refresh_redis_store(customer_id))
-
-      results_array = []
-      campaign_hash.each do |id, campaign|
-        results_array << { id: id, text: campaign["name"] }
-      end
-
-      if params[:q].present?
-        results_array = PortfoliosHelper.search_sort(params[:q], results_array)
-      end
-      return results_array
-
-    end
-
-    def get_campaigns(redis_namespace)
-      campaign_ids = redis_namespace.keys
-      campaign_hash = {}
-      campaign_ids.each do |campaign_id|
-        campaign_hash[campaign_id] = redis_namespace.hgetall campaign_id
-      end
-      campaign_hash
-    end
-
-    # This method is purely here for performance - we get over a 50% performance increase by only getting the data we need
-    def get_costs(redis_namespace, portfolio)
-      campaign_ids = portfolio.campaigns.split(',')
-      result = redis_namespace.pipelined do
-        campaign_ids.each do |campaign_id|
-          redis_namespace.hget campaign_id, "cost"
-        end
-      end
-    end
-
-    def format_portfolio_cost(portfolio)
-      costs_array = get_costs(refresh_redis_store(portfolio.client_id), portfolio)
-      campaign_cost = costs_array.reduce{|sum,x| sum.to_i + x.to_i }
-      PortfoliosHelper.to_deci(campaign_cost)
     end
 
 end
