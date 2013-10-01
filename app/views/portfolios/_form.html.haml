@@ -8,7 +8,7 @@
             prohibited this portfolio from being saved:
           %ul
             - @portfolio.errors.full_messages.each do |msg|
-              %li= msg        
+              %li= msg
       %fieldset
         = f.hidden_field :user_id, :value => session[:user_id]
         .control-group
@@ -27,7 +27,16 @@
           = f.label :campaigns
           .control
             = f.text_field :campaigns, :placeholder => 'A list of campaign id (numbers only)', :id => 'tag_adder', :class => 'control', :'data-url' => portfolios_customer_list_path
-            %span.note Press Enter to add another Campaign ID    
+            %span.note Press Enter to add another Campaign ID
+        .control-group
+          .large.ink-label.warning.invert.quater-space OR
+        .control-group
+          = f.label "Google Export Upload"
+          .note Will replace with those contained in uploaded file
+          .control
+            .input-file= file_field_tag :google
+        .control-group
+          .large.ink-label.warning.invert.quater-space OR
       .actions
         .content-left
           %a#add_all.ink-button.green{:href => "#"}
@@ -37,5 +46,5 @@
             %em This will delete all currently selected campaigns.
         .content-right
           = f.button :class => 'ink-button blue' do
-            %i.icon-plus 
+            %i.icon-plus
             Save
