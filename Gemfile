@@ -44,10 +44,6 @@ gem 'thin'
 group :development do
 end
 
-# group :test do
-#   gem 'webmock'
-# end
-
 # Testing
 group :development, :test do
   # Use sqlite3 as the database for Active Record
