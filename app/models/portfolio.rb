@@ -15,13 +15,9 @@ class Portfolio < ActiveRecord::Base
 
   def self.format_campaign_list(customer_id, current_user)
     campaign_hash = get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(customer_id, current_user))
-
-    results_array = []
-    campaign_hash.each do |id, campaign|
-      results_array << { id: id, text: campaign["name"] }
+    campaign_hash.inject([]) do |array, (id, campaign)|
+      array << { id: id, text: campaign["name"] }
     end
-
-    return results_array
   end
 
   def aggregate_portfolio_cost(current_user)

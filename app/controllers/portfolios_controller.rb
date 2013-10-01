@@ -69,12 +69,12 @@ class PortfoliosController < ApplicationController
 
   # GET /portfolios/customer_list
   def customer_list
-    if params[:customer_id].blank?
-      params[:customer_id] = session[:selected_account]
-    end
     respond_to do |format|
       format.html { head :no_content }
       format.json do
+        if params[:customer_id].blank?
+          return render json: {}
+        end
         porfolio_results = Portfolio.format_campaign_list(params[:customer_id], current_user)
         if params[:q].present?
           porfolio_results = PortfoliosHelper.search_sort(params[:q], porfolio_results)
