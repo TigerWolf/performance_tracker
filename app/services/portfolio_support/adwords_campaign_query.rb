@@ -31,6 +31,9 @@ module PortfolioSupport
         }
         begin
           result = service.get(selector)
+        # For exceptions: "Bad credentials" and "customer not found", we can safely resume and just not return empty result
+        rescue AdwordsApi::Errors::BadCredentialsError => e
+          return 0
         rescue AdwordsApi::Errors::ApiException => e
           not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
           unless not_found.nil?
