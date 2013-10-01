@@ -21,7 +21,7 @@ class Portfolio < ActiveRecord::Base
   end
 
   def aggregate_portfolio_cost(current_user)
-    campaign_cost = get_cost(PortfolioSupport::RedisQuery.refresh_redis_store(self.client_id, current_user), self)
+    campaign_cost = self.class.get_cost(PortfolioSupport::RedisQuery.refresh_redis_store(self.client_id, current_user), self)
     PortfoliosHelper.to_deci(campaign_cost)
   end
 
