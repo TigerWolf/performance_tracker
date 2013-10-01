@@ -3,7 +3,6 @@ class Portfolio < ActiveRecord::Base
   validates_numericality_of :montly_budget, :greater_than => 0
   validates :campaigns, :format => {:with => /^[0-9]+(,[0-9]+)*$/, :multiline => true }
 
-
   def self.refresh_costs(portfolios, current_user)
     Portfolio.transaction do # This reduces the amount of DB calls.
       portfolios.each do |portfolio|
