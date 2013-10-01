@@ -7,7 +7,7 @@ class Portfolio < ActiveRecord::Base
   def self.refresh_costs(portfolios, current_user)
     Portfolio.transaction do # This reduces the amount of DB calls.
       portfolios.each do |portfolio|
-        portfolio.cost = self.format_portfolio_cost(portfolio, current_user)
+        portfolio.cost = portfolio.format_portfolio_cost(current_user)
         portfolio.save!
       end
     end
@@ -24,13 +24,13 @@ class Portfolio < ActiveRecord::Base
     return results_array
   end
 
-  private
-  def self.format_portfolio_cost(portfolio, current_user)
-    costs_array = get_costs(PortfolioSupport::RedisQuery.refresh_redis_store(portfolio.client_id, current_user), portfolio)
+  def format_portfolio_cost(current_user)
+    costs_array = get_costs(PortfolioSupport::RedisQuery.refresh_redis_store(self.client_id, current_user), self)
     campaign_cost = costs_array.reduce{|sum,x| sum.to_i + x.to_i }
     PortfoliosHelper.to_deci(campaign_cost)
   end
 
+  private
 
   def self.get_costs(redis_namespace, portfolio)
     campaign_ids = portfolio.campaigns.split(',')
