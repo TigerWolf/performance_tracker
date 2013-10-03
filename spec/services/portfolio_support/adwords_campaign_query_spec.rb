@@ -14,11 +14,11 @@ describe PortfolioSupport::AdwordsCampaignQuery do
     expect(subject.class.dates).to eq(["20080901", "20080904"])
   end
 
-  it 'end of day in seconds' do
+  it 'get end of day in seconds' do
     expect(subject.class.end_of_day_seconds).to eq(43200)
   end
 
-  describe 'refresh campaigns' do
+  describe '.refresh_campaigns' do
 
     let(:customer_id)     { 2 }
     let(:redis_namespace) { Redis::Namespace.new(customer_id, :redis => $redis) }
@@ -29,7 +29,7 @@ describe PortfolioSupport::AdwordsCampaignQuery do
     subject { adwords_query }
 
     context "without mocking" do
-      it "raise OAuth exception" do
+      it "raises OAuth exception" do
         expect {subject}.to raise_error(AdsCommon::Errors::OAuth2VerificationRequired)
       end
     end
@@ -54,7 +54,7 @@ describe PortfolioSupport::AdwordsCampaignQuery do
         AdwordsApi::Api.stub(:new).and_return(api)
       end
 
-      it "stores results to redis" do
+      it "stores the results to redis" do
         expect(subject).to eq([true, true, true, true, true, true, true])
         redis_hash = $redis.hgetall "2:1"
         expect(redis_hash).to eq(
@@ -71,7 +71,7 @@ describe PortfolioSupport::AdwordsCampaignQuery do
 
       before { adwords_query }
 
-      it "ttl set" do
+      it "sets the ttl" do
         ttl = $redis.ttl "2:1"
         expect(ttl).to eq(43200)
       end
