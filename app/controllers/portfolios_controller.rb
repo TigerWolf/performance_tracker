@@ -76,9 +76,7 @@ class PortfoliosController < ApplicationController
           return render json: {}
         end
         porfolio_results = Portfolio.format_campaign_list(params[:customer_id], current_user)
-        if params[:q].present?
-          porfolio_results = PortfoliosHelper.search_sort(params[:q], porfolio_results)
-        end
+        porfolio_results = PortfoliosHelper.search_sort(params[:q], porfolio_results) if params[:q].present?
         render json: porfolio_results
      end
     end
