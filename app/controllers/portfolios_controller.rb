@@ -72,9 +72,8 @@ class PortfoliosController < ApplicationController
     respond_to do |format|
       format.html { head :no_content }
       format.json do
-        if params[:customer_id].blank?
-          return render json: {}
-        end
+        return render json: {} if params[:customer_id].blank?
+
         porfolio_results = Portfolio.format_campaign_list(params[:customer_id], current_user)
         porfolio_results = PortfoliosHelper.search_sort(params[:q], porfolio_results) if params[:q].present?
         render json: porfolio_results
