@@ -24,7 +24,9 @@ describe PortfolioSupport::AdwordsCampaignQuery do
     let(:redis_namespace) { Redis::Namespace.new(customer_id, :redis => $redis) }
     let(:current_user)    { User.create }
 
-    subject { PortfolioSupport::AdwordsCampaignQuery.refresh_campaigns(customer_id, redis_namespace, current_user) }
+    let(:adwords_query) { PortfolioSupport::AdwordsCampaignQuery.refresh_campaigns(customer_id, redis_namespace, current_user) }
+
+    subject { adwords_query }
 
     context "without mocking" do
       it "raise OAuth exception" do
@@ -67,8 +69,9 @@ describe PortfolioSupport::AdwordsCampaignQuery do
         )
       end
 
+      before { adwords_query }
+
       it "ttl set" do
-        subject # TODO: Improve this to not have to call subject here. How?
         ttl = $redis.ttl "2:1"
         expect(ttl).to eq(43200)
       end
