@@ -3,14 +3,12 @@ require 'spec_helper'
 describe PortfolioSupport::AdwordsCampaignQuery do
 
 
-  before do
+  before {
     new_time = Time.local(2008, 9, 5, 12, 0, 0)
     Timecop.freeze(new_time)
-  end
+  }
 
-  after do
-    Timecop.return
-  end
+  after { Timecop.return }
 
   it 'get dates for start of the month and current day' do
     expect(subject.class.dates).to eq(["20080901", "20080904"])
