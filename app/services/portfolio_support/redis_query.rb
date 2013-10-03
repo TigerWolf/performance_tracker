@@ -11,11 +11,11 @@ module PortfolioSupport
     #   - A Redis object namespaced to the customer_id
     #
     def self.refresh_redis_store(customer_id, current_user)
-      namespaced = Redis::Namespace.new(customer_id, :redis => $redis)
-      unless namespaced.keys.present? # Check for existance of customer id namespace/cache
-        PortfolioSupport::AdwordsCampaignQuery.refresh_campaigns(customer_id, namespaced, current_user) # Cache expired, refresh
+      Redis::Namespace.new(customer_id, :redis => $redis).tap do |namespaced|
+        unless namespaced.keys.present? # Check for existance of customer id namespace/cache
+          PortfolioSupport::AdwordsCampaignQuery.refresh_campaigns(customer_id, namespaced, current_user) # Cache expired, refresh
+        end
       end
-      namespaced
     end
 
   end
