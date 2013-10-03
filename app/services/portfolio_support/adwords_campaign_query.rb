@@ -42,6 +42,11 @@ module PortfolioSupport
           raise e
         end
 
+        store_results(redis_namespace, result)
+
+      end
+
+      def self.store_results(redis_namespace, result)
         redis_namespace.pipelined do
           if result[:entries].present?
             result[:entries].each do |entry|
@@ -57,8 +62,6 @@ module PortfolioSupport
             end
           end
         end
-
-
 
       end
   end
