@@ -12,7 +12,7 @@ describe PortfolioSupport::AdwordsCampaignQuery do
     Timecop.return
   end
 
-  it 'get dates' do
+  it 'get dates for start of the month and current day' do
     expect(subject.class.dates).to eq(["20080901", "20080904"])
   end
 
