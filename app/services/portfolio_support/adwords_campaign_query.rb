@@ -59,7 +59,6 @@ module PortfolioSupport
             raise e
           end
 
-          require 'csv'
           array = CSV.parse(report_data)
           report_name = array.shift
           header = array.shift # CSV Second row
