@@ -228,7 +228,7 @@ DEPENDENCIES
   draper
   filecache
   font-awesome-rails
-  google-adwords-api (~> 0.9.0)
+  google-adwords-api (~> 0.9.3)
   haml
   ink2-rails!
   jbuilder (~> 1.2)

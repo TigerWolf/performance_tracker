@@ -33,7 +33,7 @@ group :doc do
 end
 
 # AdWords API gem.
-gem 'google-adwords-api', '~> 0.9.0'
+gem 'google-adwords-api', '~> 0.9.3'
 
 # Gem for OAuth authorization.
 gem 'oauth2'
