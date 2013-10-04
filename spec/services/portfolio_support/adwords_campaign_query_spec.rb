@@ -39,18 +39,9 @@ describe PortfolioSupport::AdwordsCampaignQuery do
       before do
         api = double(AdwordsApi::Api)
         service = double("service")
-        service.stub(:get).and_return({
-          :entries =>
-          [{
-            :id => 1,
-            :name => "test",
-            :campaign_stats =>
-            {
-              :cost => {}
-            }
-          }]
-        })
-        api.stub(:service).and_return(service)
+        csv_string = "Report title\nCampaign ID,Campaign,Cost\n1,test,1.3\ntotals"
+        service.stub(:download_report).and_return(csv_string)
+        api.stub(:report_utils).and_return(service)
         AdwordsApi::Api.stub(:new).and_return(api)
       end
 
@@ -64,7 +55,7 @@ describe PortfolioSupport::AdwordsCampaignQuery do
             "clicks"=>"",
             "impressions"=>"",
             "ctr"=>"",
-            "cost"=>""
+            "cost"=>"1.3"
           }
         )
       end
