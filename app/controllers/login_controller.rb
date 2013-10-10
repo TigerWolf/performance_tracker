@@ -38,7 +38,7 @@ class LoginController < ApplicationController
       create_or_login_user(session[:token][:access_token])
 
       flash.notice = 'Authorized successfully'
-      redirect_to home_index_path
+      redirect_to portfolios_report_path
     rescue AdsCommon::Errors::OAuth2VerificationRequired => e
       flash.alert = 'Authorization failed'
       redirect_to login_prompt_path
