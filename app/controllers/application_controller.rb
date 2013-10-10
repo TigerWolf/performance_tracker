@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    u = User.find_by_id(session[:user_id])
+    u = User.where(id: session[:user_id]).first
     if u
       u.token = session[:token]
     end
