@@ -50,6 +50,7 @@ GEM
       execjs
     coffee-script-source (1.6.3)
     curb (0.8.4)
+    daemon_controller (1.1.5)
     daemons (1.1.9)
     diff-lcs (1.2.4)
     draper (1.2.1)
@@ -113,6 +114,10 @@ GEM
       multi_json (~> 1.0)
       multi_xml (~> 0.5)
       rack (~> 1.2)
+    passenger (4.0.20)
+      daemon_controller (>= 1.1.0)
+      rack
+      rake (>= 0.8.1)
     pg (0.16.0)
     polyglot (0.3.3)
     pry (0.9.12.2)
@@ -236,6 +241,7 @@ DEPENDENCIES
   meta_request
   mock_redis
   oauth2
+  passenger
   pg (>= 0.11.0)
   pry
   rails (= 4.0.0)

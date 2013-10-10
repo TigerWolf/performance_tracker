@@ -41,6 +41,11 @@ gem 'oauth2'
 # Web Server
 gem 'thin'
 
+# Engineyard
+
+gem 'passenger'
+
+
 group :development do
 end
 
