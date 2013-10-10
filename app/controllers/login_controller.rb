@@ -7,7 +7,7 @@ class LoginController < ApplicationController
   GOOGLE_LOGOUT_URL = 'https://www.google.com/accounts/Logout'
 
   def prompt()
-    api = get_adwords_api()
+    api = AdWordsConnection.get_adwords_api
     if session[:token]
       redirect_to home_index_path
     else
@@ -25,7 +25,7 @@ class LoginController < ApplicationController
   end
 
   def callback()
-    api = get_adwords_api()
+    api = AdWordsConnection.get_adwords_api
     begin
       session[:token] = api.authorize(
           {
@@ -50,7 +50,7 @@ class LoginController < ApplicationController
     response = JSON.parse(http.body_str)
     user = User.create_or_login_with_oauth(response)
     session[:user_id] = user.id
-    
+
   end
 
   def logout()
