@@ -20,8 +20,9 @@ module PortfolioSupport
 
       def self.refresh_campaigns(customer_id, redis_namespace, current_user)
 
+          start_date, end_date = dates
+
           api = AdWordsConnection.create_adwords_api(current_user.token, customer_id)
-          report_utils = api.report_utils
           selector = {
             :selector => {
               :fields =>
@@ -34,20 +35,19 @@ module PortfolioSupport
                   'Clicks',
                   'Cost',
                   'Ctr'
-                ]
+                ],
+              :date_range => {:min=>start_date, :max=>end_date},
             },
             :report_name => 'Campaign Performance Report',
             :report_type => 'CAMPAIGN_PERFORMANCE_REPORT',
-            :download_format => 'CSV',
-            :date_range_type => 'THIS_MONTH',
-            # TODO: We will need to use this in the future, its not in the API DOCS so we will keep this comment in for future reference
-            #:date_range_type => 'CUSTOM',
-            #:date_range => ['start_data','end_date'],
+            :download_format => 'GZIPPED_CSV',
+            :date_range_type => 'CUSTOM_DATE',
             :include_zero_impressions => false
           }
 
           begin
-            report_data = report_utils.download_report(selector)
+            report_data = api.report_utils.download_report(selector)
+            report_data = ActiveSupport::Gzip.decompress(report_data)
           # For exceptions: "Bad credentials" and "customer not found", we can safely resume and just not return empty result
           rescue AdwordsApi::Errors::BadCredentialsError => e
             return 0
