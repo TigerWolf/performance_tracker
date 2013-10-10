@@ -9,7 +9,7 @@ class LoginController < ApplicationController
   def prompt()
     api = AdWordsConnection.get_adwords_api
     if session[:token]
-      redirect_to home_index_path
+      redirect_to portfolios_report_path
     else
       begin
         token = api.authorize({:oauth2_callback => login_callback_url})
