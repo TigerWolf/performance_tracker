@@ -21,6 +21,7 @@ class LoginController < ApplicationController
         end
         @login_url = e.oauth_url
       end
+      raise "Url not loaded properly" unless url.present?
     end
   end
 
