@@ -54,7 +54,7 @@ class LoginController < ApplicationController
   end
 
   def logout()
-    [:selected_account, :token, :user_id].each {|key| session.delete(key)}
+    [:token, :user_id].each {|key| session.delete(key)}
     redirect_to GOOGLE_LOGOUT_URL
   end
 end

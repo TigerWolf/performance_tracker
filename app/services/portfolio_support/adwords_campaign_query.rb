@@ -1,7 +1,7 @@
 module PortfolioSupport
     class AdwordsCampaignQuery
       def self.dates
-        d = Date.today
+        d = Date.today.in_time_zone("Adelaide")
         start_date = DateTime.parse(d.beginning_of_month.to_s).strftime("%Y%m%d")
         end_date = DateTime.parse(d.yesterday.to_s).strftime("%Y%m%d")
 
@@ -52,6 +52,10 @@ module PortfolioSupport
           rescue AdwordsApi::Errors::BadCredentialsError => e
             return 0
           rescue AdwordsApi::Errors::ReportError => e
+            if e.respond_to? :reason
+              if reason == "AuthorizationError.USER_PERMISSION_DENIED"
+                [:token, :user_id].each {|key| session.delete(key)}
+              end
             if e.respond_to? :errors
               not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
               unless not_found.nil?
