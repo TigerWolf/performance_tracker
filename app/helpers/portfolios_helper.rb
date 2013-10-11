@@ -1,6 +1,6 @@
 module PortfoliosHelper
   def self.to_deci(micro)
-    (micro.to_f / 100) / 10000
+    micro.to_f / 1000000
   end
 
   # Only display exact and partial matches (2 chars needed)
