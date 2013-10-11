@@ -52,9 +52,7 @@ module PortfolioSupport
           rescue AdwordsApi::Errors::BadCredentialsError => e
             return 0
           rescue AdwordsApi::Errors::ReportError => e
-            if e.errors.present?
-              not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
-            end
+            not_found = e.try(:errors).detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
             unless not_found.nil?
               return 0
             end
