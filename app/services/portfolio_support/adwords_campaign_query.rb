@@ -56,6 +56,7 @@ module PortfolioSupport
               if reason == "AuthorizationError.USER_PERMISSION_DENIED"
                 [:token, :user_id].each {|key| session.delete(key)}
               end
+            end
             if e.respond_to? :errors
               not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
               unless not_found.nil?
