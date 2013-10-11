@@ -13,7 +13,7 @@ module PortfolioSupport
       end
 
       def self.end_of_day_seconds
-        t = Time.now
+        t = Time.now.in_time_zone("Adelaide")
         now_in_seconds = t.hour * 3600 + t.min * 60
         86400 - now_in_seconds
       end
