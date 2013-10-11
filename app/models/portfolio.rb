@@ -4,11 +4,9 @@ class Portfolio < ActiveRecord::Base
   validates :campaigns, :format => {:with => /^[0-9]+(,[0-9]+)*$/, :multiline => true }
 
   def self.refresh_costs(portfolios, current_user)
-    Portfolio.transaction do # This reduces the amount of DB calls.
-      portfolios.each do |portfolio|
-        portfolio.cost = portfolio.aggregate_portfolio_cost(current_user)
-        portfolio.save!
-      end
+    portfolios.each do |portfolio|
+      portfolio.cost = portfolio.aggregate_portfolio_cost(current_user)
+      portfolio.save!
     end
   end
 
