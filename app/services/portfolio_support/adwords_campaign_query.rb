@@ -1,7 +1,7 @@
 module PortfolioSupport
     class AdwordsCampaignQuery
       def self.dates
-        d = Date.today.in_time_zone("Adelaide")
+        d = Date.today
         start_date = DateTime.parse(d.beginning_of_month.to_s).strftime("%Y%m%d")
         end_date = DateTime.parse(d.yesterday.to_s).strftime("%Y%m%d")
 
@@ -13,7 +13,7 @@ module PortfolioSupport
       end
 
       def self.end_of_day_seconds
-        t = Time.now.in_time_zone("Adelaide")
+        t = Time.now
         now_in_seconds = t.hour * 3600 + t.min * 60
         86400 - now_in_seconds
       end
