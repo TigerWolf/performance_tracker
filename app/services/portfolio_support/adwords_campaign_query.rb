@@ -26,17 +26,17 @@ module PortfolioSupport
           selector = {
             :selector => {
               :fields =>
-                [
-                  'CampaignId',
-                  'Id',
-                  'CampaignName',
-                  'CampaignStatus',
-                  'Impressions',
-                  'Clicks',
-                  'Cost',
-                  'Ctr'
-                ],
-              :date_range => {:min=>start_date, :max=>end_date},
+              [
+                'CampaignId',
+                'Id',
+                'CampaignName',
+                'CampaignStatus',
+                'Impressions',
+                'Clicks',
+                'Cost',
+                'Ctr'
+              ],
+              :date_range => {min: start_date, max: end_date},
             },
             :report_name => 'Campaign Performance Report',
             :report_type => 'CAMPAIGN_PERFORMANCE_REPORT',
