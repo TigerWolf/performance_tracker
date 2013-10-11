@@ -58,7 +58,7 @@ module PortfolioSupport
               end
             end
             if e.respond_to? :errors
-              not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
+              not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" || exception[:reason] == "USER_PERMISSION_DENIED" }
               unless not_found.nil?
                 return 0
               end
