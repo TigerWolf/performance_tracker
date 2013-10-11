@@ -52,13 +52,13 @@ module PortfolioSupport
           rescue AdwordsApi::Errors::BadCredentialsError => e
             return 0
           rescue AdwordsApi::Errors::ReportError => e
-            if e.respond_to? :reason
-              if reason == "USER_PERMISSION_DENIED"
+            if e.respond_to? :type
+              if e.type == "AuthorizationError.USER_PERMISSION_DENIED"
                 return 0 # We need to log the user out here or redirect to login page - not sure how within this query
               end
             end
             if e.respond_to? :errors
-              not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" || exception[:reason] == "USER_PERMISSION_DENIED" }
+              not_found = e.errors.detect { |exception| exception[:reason] == "CUSTOMER_NOT_FOUND" }
               unless not_found.nil?
                 return 0
               end
