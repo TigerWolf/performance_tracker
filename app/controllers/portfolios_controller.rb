@@ -13,8 +13,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios/report.json
   def report
     @portfolios = Portfolio.where(user_id: session[:user_id]).decorate
-    Portfolio.refresh_costs(@portfolios, current_user)
-    @portfolios = @portfolios.map(&:reload)
+    @portfolios = Portfolio.refresh_costs(@portfolios, current_user)
     @portfolios.sort!{ |a,b| b.difference.to_i.abs <=> a.difference.to_i.abs }
   end
 
