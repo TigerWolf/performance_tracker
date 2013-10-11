@@ -32,7 +32,7 @@ class Portfolio < ActiveRecord::Base
         redis_namespace.hget campaign_id, "cost"
       end
     end
-    result.reduce{|sum,x| sum.to_i + x.gsub!(',','').to_i }
+    result.reduce{|sum,x| sum.to_i + x.gsub!(',','').to_i if x.is_a?(String) }
   end
 
   def self.get_campaigns(redis_namespace)
