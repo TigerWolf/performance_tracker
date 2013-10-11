@@ -14,6 +14,7 @@ class PortfoliosController < ApplicationController
   def report
     @portfolios = Portfolio.where(user_id: session[:user_id]).decorate
     @portfolios = Portfolio.refresh_costs(@portfolios, current_user)
+    @portfolios.map(&:reload)
     @portfolios.sort!{ |a,b| b.difference.to_i.abs <=> a.difference.to_i.abs }
   end
 
