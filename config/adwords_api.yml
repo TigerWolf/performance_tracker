@@ -34,3 +34,4 @@
   # :proxy: INSERT_PROXY_HERE
 :library:
   :log_level: INFO
+  :return_money_in_micros: true
