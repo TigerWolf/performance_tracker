@@ -28,7 +28,6 @@ module PortfolioSupport
               :fields =>
               [
                 'CampaignId',
-                'Id',
                 'CampaignName',
                 'CampaignStatus',
                 'Impressions',
@@ -66,35 +65,35 @@ module PortfolioSupport
             raise e
           end
 
-          array = CSV.parse(report_data)
-          report_name = array.shift
-          header = array.shift # CSV Second row
-          totals = array.pop
+          report_headers = [
+            "Campaign",
+            "Campaign state",
+            "Impressions",
+            "Clicks",
+            "Cost",
+            "CTR"
+          ]
 
-          result = []
-          array.each do |i|
-            result << Hash[[header, i].transpose]
+          redis_namespace.pipelined do
+            CSV.parse(report_data, :headers => report_headers).each_with_index do |row, idx|
+              #This is to remove the first and second row as well as the totals on the last row
+              next if idx == 0 or idx == 1 or entry["Campaign"] == "Total"
+              store_result redis_namespace, row
+            end
           end
-          store_results(redis_namespace, result)
 
       end
 
-      def self.store_results(redis_namespace, result)
-        redis_namespace.pipelined do
-          #if result[:entries].present?
-            result.each do |entry|
-              redis_namespace.hset entry["Campaign ID"], "name",        entry["Campaign"]
-              redis_namespace.hset entry["Campaign ID"], "status",      entry["Campaign state"]
-              redis_namespace.hset entry["Campaign ID"], "clicks",      entry["Clicks"]
-              redis_namespace.hset entry["Campaign ID"], "impressions", entry["Impressions"]
-              redis_namespace.hset entry["Campaign ID"], "ctr",         entry["Ctr"]
-              redis_namespace.hset entry["Campaign ID"], "cost",        PortfoliosHelper.to_deci(entry["Cost"])
-              # Set the expiry to the seconds left in the day day.
-              #TODO: Be timezone aware - server time may not be sufficient.
-              redis_namespace.expire entry["Campaign ID"], end_of_day_seconds
-            end
-          #end
-        end
+      def self.store_result(redis_namespace, entry)
+        redis_namespace.hset entry["Campaign ID"], "name",        entry["Campaign"]
+        redis_namespace.hset entry["Campaign ID"], "status",      entry["Campaign state"]
+        redis_namespace.hset entry["Campaign ID"], "clicks",      entry["Clicks"]
+        redis_namespace.hset entry["Campaign ID"], "impressions", entry["Impressions"]
+        redis_namespace.hset entry["Campaign ID"], "ctr",         entry["Ctr"]
+        redis_namespace.hset entry["Campaign ID"], "cost",        PortfoliosHelper.to_deci(entry["Cost"])
+        # Set the expiry to the seconds left in the day day.
+        #TODO: Be timezone aware - server time may not be sufficient.
+        redis_namespace.expire entry["Campaign ID"], end_of_day_seconds
 
       end
   end
