@@ -34,7 +34,7 @@ class Portfolio < ActiveRecord::Base
     end
     result.reduce do |sum,x|
       x.gsub!(',','') if x.is_a?(String)
-      sum.to_i + x.to_i
+      sum.to_f + x.to_f
     end
 
   end
