@@ -19,9 +19,9 @@ class LoginController < ApplicationController
         e.oauth_url.query.tap do |url|
           url << "+https://www.googleapis.com/auth/userinfo.email" # + is a space char in HTML
         end
+        raise "Url not loaded properly" unless e.oauth_url.present?
         @login_url = e.oauth_url
       end
-      raise "Url not loaded properly" unless url.present?
     end
   end
 
