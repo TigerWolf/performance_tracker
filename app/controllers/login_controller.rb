@@ -16,10 +16,10 @@ class LoginController < ApplicationController
       rescue AdsCommon::Errors::OAuth2VerificationRequired => e
         # TODO: Fix this up in the future, possibly implement all of the OAuth rather than letting the client library handle it.
         #  this is not the best way to do it but a limitation of the client library - it doest not let you set the scope. (:oauth2_scope)
+        raise e unless e.oauth_url.present?
         e.oauth_url.query.tap do |url|
           url << "+https://www.googleapis.com/auth/userinfo.email" # + is a space char in HTML
         end
-        raise "Url not loaded properly" unless e.oauth_url.present?
         @login_url = e.oauth_url
       end
     end
