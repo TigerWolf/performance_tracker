@@ -41,7 +41,7 @@ module PortfolioSupport
             :report_type => 'CAMPAIGN_PERFORMANCE_REPORT',
             :download_format => 'GZIPPED_CSV',
             :date_range_type => 'CUSTOM_DATE',
-            :include_zero_impressions => false
+            :include_zero_impressions => true
           }
 
           begin
