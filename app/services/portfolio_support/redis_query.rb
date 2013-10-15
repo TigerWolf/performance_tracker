@@ -25,7 +25,7 @@ module PortfolioSupport
       redis_namespace.hset entry["Campaign ID"], "impressions", entry["Impressions"]
       redis_namespace.hset entry["Campaign ID"], "ctr",         entry["Ctr"]
       redis_namespace.hset entry["Campaign ID"], "cost",        PortfoliosHelper.to_deci(entry["Cost"])
-      # Set the expiry to the seconds left in the day day.
+      # Set the expiry to the seconds left in the day.
       #TODO: Be timezone aware - server time may not be sufficient.
       redis_namespace.expire entry["Campaign ID"], end_of_day_seconds
     end
