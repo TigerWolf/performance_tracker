@@ -34,19 +34,27 @@ describe PortfolioSupport::AdwordsCampaignQuery do
       end
     end
 
+    def gzip(string)
+        wio = StringIO.new("w")
+        w_gz = Zlib::GzipWriter.new(wio)
+        w_gz.write(string)
+        w_gz.close
+        compressed = wio.string
+    end
+
     context "with mocking" do
 
       before do
         api = double(AdwordsApi::Api)
         service = double("service")
-        csv_string = "Report title\nCampaign ID,Campaign,Cost\n1,test,1.3\ntotals"
-        service.stub(:download_report).and_return(csv_string)
+        csv_string = "Report title\nCampaign ID,Campaign,Campaign state,Impressions,Clicks,Cost,CTR\n1,test,,,,1300000\ntotals"
+        service.stub(:download_report).and_return(gzip(csv_string))
         api.stub(:report_utils).and_return(service)
         AdwordsApi::Api.stub(:new).and_return(api)
       end
 
       it "stores the results to redis" do
-        expect(subject).to eq([true, true, true, true, true, true, true])
+        expect(subject).to eq([true, true, true, true, true, true, true, true, true, true, true, true, true, true])
         redis_hash = $redis.hgetall "2:1"
         expect(redis_hash).to eq(
           {
