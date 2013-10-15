@@ -30,12 +30,12 @@
             %span.note Press Enter to add another Campaign ID
         .control-group
           .large.ink-label.warning.invert.quater-space OR
-        .control-group
+        .control-group{style: "display:none;"}
           = f.label "Google Export Upload"
           .note Will replace with those contained in uploaded file
           .control
             .input-file= file_field_tag :google
-        .control-group
+        .control-group{style: "display:none;"}
           .large.ink-label.warning.invert.quater-space OR
       .actions
         .content-left
