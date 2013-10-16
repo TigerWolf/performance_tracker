@@ -7,7 +7,7 @@ class LoginController < ApplicationController
   GOOGLE_LOGOUT_URL = 'https://www.google.com/accounts/Logout'
 
   def prompt()
-    api = AdWordsConnection.get_adwords_api
+    api = AdWordsConnection.create_adwords_api
     if session[:token]
       redirect_to portfolios_report_path
     else
@@ -24,7 +24,7 @@ class LoginController < ApplicationController
   end
 
   def callback()
-    api = AdWordsConnection.get_adwords_api
+    api = AdWordsConnection.create_adwords_api
     begin
       session[:token] = api.authorize(
           {
