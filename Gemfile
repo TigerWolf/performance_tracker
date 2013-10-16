@@ -70,8 +70,6 @@ gem 'select2-rails'
 
 gem 'curb'
 
-gem 'filecache'
-
 gem 'draper'
 gem 'rollbar'
 
