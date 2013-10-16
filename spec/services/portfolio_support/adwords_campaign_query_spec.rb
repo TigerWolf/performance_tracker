@@ -14,10 +14,6 @@ describe PortfolioSupport::AdwordsCampaignQuery do
     expect(subject.class.dates).to eq(["20080901", "20080904"])
   end
 
-  it 'get end of day in seconds' do
-    expect(subject.class.end_of_day_seconds).to eq(43200)
-  end
-
   describe '.refresh_campaigns' do
 
     let(:customer_id)     { 2 }

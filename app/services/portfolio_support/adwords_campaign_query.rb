@@ -12,12 +12,6 @@ module PortfolioSupport
         [start_date, end_date]
       end
 
-      def self.end_of_day_seconds
-        t = Time.now
-        now_in_seconds = t.hour * 3600 + t.min * 60
-        86400 - now_in_seconds
-      end
-
       def self.refresh_campaigns(customer_id, redis_namespace, current_user)
 
         start_date, end_date = dates

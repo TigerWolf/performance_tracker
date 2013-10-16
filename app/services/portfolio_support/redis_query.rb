@@ -18,6 +18,12 @@ module PortfolioSupport
       end
     end
 
+    def self.end_of_day_seconds
+      t = Time.now
+      now_in_seconds = t.hour * 3600 + t.min * 60
+      86400 - now_in_seconds
+    end
+
     def self.store_result(redis_namespace, entry)
       redis_namespace.hset entry["Campaign ID"], "name",        entry["Campaign"]
       redis_namespace.hset entry["Campaign ID"], "status",      entry["Campaign state"]
