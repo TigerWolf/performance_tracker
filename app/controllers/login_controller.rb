@@ -12,7 +12,6 @@ class LoginController < ApplicationController
       redirect_to portfolios_report_path
     else
       begin
-        binding.pry
         token = api.authorize#({:oauth2_callback => login_callback_url})
       rescue AdsCommon::Errors::OAuth2VerificationRequired => e
         # TODO: Fix this up in the future, possibly implement all of the OAuth rather than letting the client library handle it.
