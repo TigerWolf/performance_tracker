@@ -82,6 +82,9 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       request_store (~> 1.0.3)
+    em-websocket (0.5.0)
+      eventmachine (>= 0.12.9)
+      http_parser.rb (~> 0.5.3)
     erubis (2.7.0)
     eventmachine (1.0.3)
     execjs (2.0.0)
@@ -106,11 +109,16 @@ GEM
     guard-compass (0.0.8)
       compass (>= 0.10.5)
       guard (>= 1.8)
+    guard-livereload (1.4.0)
+      em-websocket (>= 0.5.0)
+      guard (>= 1.8.0)
+      multi_json (~> 1.7)
     gyoku (0.4.6)
       builder (>= 2.1.2)
     haml (4.0.3)
       tilt
     hike (1.2.3)
+    http_parser.rb (0.5.3)
     httpauth (0.2.0)
     httpi (1.1.1)
       rack
@@ -163,6 +171,8 @@ GEM
     rack (1.5.2)
     rack-contrib (1.1.0)
       rack (>= 0.9.1)
+    rack-livereload (0.3.15)
+      rack
     rack-test (0.6.2)
       rack (>= 1.0)
     rails (4.0.0)
@@ -276,6 +286,7 @@ DEPENDENCIES
   font-awesome-rails
   google-adwords-api (~> 0.9.3)
   guard-compass
+  guard-livereload
   haml
   ink2-rails!
   jbuilder (~> 1.2)
@@ -285,9 +296,11 @@ DEPENDENCIES
   oauth2
   pg (>= 0.11.0)
   pry
+  rack-livereload
   rails (= 4.0.0)
   rails-perftest
   rails_12factor
+  rb-fsevent
   redis
   redis-namespace
   rollbar

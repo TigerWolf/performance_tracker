@@ -40,14 +40,17 @@ gem 'thin'
 
 group :assets do
   # Use SCSS for stylesheets
-  gem 'sass', github: 'nex3/sass', tag: '3.3.0.rc.1'
+  gem 'sass',                       github: 'nex3/sass', tag: '3.3.0.rc.1'
   gem 'sass-rails'
   gem 'compass', '~> 0.13.alpha.7', github: 'chriseppstein/compass'
-  gem 'compass-rails', github: 'Compass/compass-rails'
+  gem 'compass-rails',              github: 'Compass/compass-rails'
 end
 
 group :development do
-  gem 'guard-compass'
+  gem 'guard-livereload', require: false
+  gem 'guard-compass',    require: false
+  gem 'rack-livereload'
+  gem 'rb-fsevent',       require: false
 end
 
 # Testing

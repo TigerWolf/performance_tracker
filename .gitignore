@@ -17,3 +17,6 @@
 
 # Config files
 config/redis.yml
+
+# Assets compiled by Compass
+public/assets/*
