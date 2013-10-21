@@ -38,14 +38,6 @@ gem 'oauth2'
 # Web Server
 gem 'thin'
 
-group :assets do
-  # Use SCSS for stylesheets
-  gem 'sass',                       github: 'nex3/sass', tag: '3.3.0.rc.1'
-  gem 'sass-rails'
-  gem 'compass', '~> 0.13.alpha.7', github: 'chriseppstein/compass'
-  gem 'compass-rails',              github: 'Compass/compass-rails'
-end
-
 group :development do
   gem 'guard-livereload', require: false
   gem 'guard-compass',    require: false
@@ -76,6 +68,12 @@ gem 'font-awesome-rails'
 gem 'haml'
 gem 'select2-rails'
 
+# These need to be outside the :assets group
+# https://github.com/Compass/compass-rails/issues/19
+gem 'sass',                       github: 'nex3/sass', tag: '3.3.0.rc.1'
+gem 'sass-rails'
+gem 'compass', '~> 0.13.alpha.7', github: 'chriseppstein/compass'
+gem 'compass-rails',              github: 'Compass/compass-rails'
 
 gem 'curb'
 
