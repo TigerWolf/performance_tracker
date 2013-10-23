@@ -26,4 +26,11 @@ PerformanceTracker::Application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
+
+  # Add webfonts to the Asset Pipeline, allows placing fonts in /vendor/assets/fonts
+  config.assets.precompile << Proc.new { |path|
+    if path =~ /\.(eot|svg|ttf|woff)\z/
+     true
+    end
+  }
 end

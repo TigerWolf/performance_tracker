@@ -1,15 +1,44 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the top of the
- * compiled file, but it's generally better to create a new file per style scope.
- *
- *= require_self
- *= require ink
- *= require select2
- *= require_tree .
- */
+/* ╭────────────────────────────────────────────────────────
+   │  Kieran's Tool
+   │  → TODO: Give the app a less phallic-sounding name
+   ╰─────────────────────────────────────────────────── */
+
+// ╭───────────────╮
+// │ Vendor assets │
+// ╰───────────────╯
+
+// ───── Reset/normalize ─────
+
+@import "reset"
+
+// ───── Compass CSS framework ─────
+
+@import "compass"
+
+// ───── ink2 CSS bootstrap ─────
+
+@import "ink"
+
+// ───── select2 select dropdown replacement ─────
+
+@import "select2"
+
+// ╭──────╮
+// │ Core │
+// ╰──────╯
+
+// ───── Helpers ─────
+
+@import "core/helpers"
+
+// ───── Settings ─────
+
+@import "core/settings"
+
+// ───── Base ─────
+
+@import "core/base"
+
+// ╭─────────╮
+// │ Modules │
+// ╰─────────╯

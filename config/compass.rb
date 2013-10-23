@@ -1,12 +1,12 @@
 # Require any additional compass plugins here.
 
 # Set this to the root of your project when deployed:
-http_path = "/"
-css_dir = "public/assets/stylesheets"
-sass_dir = "app/assets/stylesheets"
-images_dir = "app/assets/images"
+http_path       = "/"
+css_dir         = "public/assets/stylesheets"
+sass_dir        = "app/assets/stylesheets"
+images_dir      = "app/assets/images"
 javascripts_dir = "app/assets/javascripts"
-fonts_dir = 'public/assets/fonts'
+fonts_dir       = 'vendor/assets/fonts'
 
 # You can select your preferred output style here (can be overridden via the command line):
 # output_style = :expanded or :nested or :compact or :compressed
