@@ -34,6 +34,25 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
 
+    # Check if file was selected
+    csv_file = params[:portfolio][:google].read
+    campaign_names = []
+    CSV.parse(csv_file).each_with_index do |row, idx|
+      #This is to remove the first and second row as well as the totals on the last row
+      next if idx == 0 or idx == 1 or row[0].start_with?("Total")
+      campaign_names << row[1] # Check headers for this?
+    end
+    # Do redis search for campaign names
+    # Save campaign names to campaign attribute
+
+    $redis.pipelined do
+      Redis::Namespace.new(customer_id, :redis => $redis).tap do |namespaced|
+        namespaced.keys
+
+      end
+    end
+    binding.pry
+
     respond_to do |format|
       if @portfolio.save
         format.html { redirect_to portfolios_path, notice: 'Portfolio was successfully created.' }

@@ -3,6 +3,10 @@ class Portfolio < ActiveRecord::Base
   validates_numericality_of :montly_budget, :greater_than => 0
   validates :campaigns, :format => {:with => /^[0-9]+(,[0-9]+)*$/, :multiline => true }
 
+  def import_csv(file)
+    binding.pry
+  end
+
   def self.refresh_costs(portfolios, current_user)
     portfolios.each do |portfolio|
       portfolio.cost = portfolio.aggregate_portfolio_cost(current_user)
