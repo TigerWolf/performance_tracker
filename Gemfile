@@ -70,10 +70,10 @@ gem 'select2-rails'
 
 # These need to be outside the :assets group
 # https://github.com/Compass/compass-rails/issues/19
-gem 'sass',                       github: 'nex3/sass', tag: '3.3.0.rc.1'
+gem 'sass',          '~> 3.3.0.rc.1'
 gem 'sass-rails'
-gem 'compass', '~> 0.13.alpha.7', github: 'chriseppstein/compass'
-gem 'compass-rails',              github: 'Compass/compass-rails'
+gem 'compass',       '~> 0.13.alpha.10'
+gem 'compass-rails', '~> 2.0.alpha.0'
 
 gem 'curb'
 
