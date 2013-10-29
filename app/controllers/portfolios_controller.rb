@@ -34,30 +34,34 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
 
-    # Check if file was selected
-    csv_file = params[:portfolio][:google].read
-    campaign_names = []
-    CSV.parse(csv_file).each_with_index do |row, idx|
-      #This is to remove the first and second row as well as the totals on the last row
-      next if idx == 0 or idx == 1 or row[1] == "--"
-      campaign_names << row[1] # Check headers for this?
-    end
+    if params[:portfolio][:google].present?
+      # Check if file was selected
+      csv_file = params[:portfolio][:google].read
+      campaign_names = []
+      CSV.parse(csv_file).each_with_index do |row, idx|
+        #This is to remove the first and second row as well as the totals on the last few rows
+        next if idx == 0 or idx == 1 or row[1] == "--"
+        campaign_names << row[1] # Campaign name is always in second column
+      end
 
-    campaigns = Portfolio.get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(@portfolio.client_id, current_user))
-    campaign_ids = []
+      campaigns = Portfolio.get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(@portfolio.client_id, current_user))
+      campaign_ids = []
 
-    campaign_names.each do |campaign_name|
-      campaigns.each do |id, campaign|
-        if campaign["name"] == campaign_name
-          campaign_ids << id
+      #TODO: This can be improved later by indexing all of the campaign names in Redis in a SET
+      # The benefit is mostly for performance and removing the need to use the Redis command KEYS
+      # It would also mean that the entire campaign hashes would not need to be fetched for this query
+      campaign_names.each do |campaign_name|
+        campaigns.each do |id, campaign|
+          if campaign["name"] == campaign_name
+            campaign_ids << id
+          end
         end
       end
-    end
 
-    if campaign_ids.present?
-      @portfolio.campaigns = campaign_ids.join(",")
+      if campaign_ids.present?
+        @portfolio.campaigns = campaign_ids.join(",")
+      end
     end
-
     respond_to do |format|
       if @portfolio.save
         format.html { redirect_to portfolios_path, notice: 'Portfolio was successfully created.' }
