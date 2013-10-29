@@ -3,15 +3,15 @@ class Portfolio < ActiveRecord::Base
   validates_numericality_of :montly_budget, :greater_than => 0
   validates :campaigns, :format => {:with => /^[0-9]+(,[0-9]+)*$/, :multiline => true }
 
-  def import_csv(file)
+  def import_csv(file, current_user)
     campaign_names = []
-    CSV.parse(csv_file).each_with_index do |row, idx|
+    CSV.parse(file).each_with_index do |row, idx|
       #This is to remove the first and second row as well as the totals on the last few rows
       next if idx == 0 or idx == 1 or row[1] == "--"
       campaign_names << row[1] # Campaign name is always in second column
     end
 
-    campaigns = Portfolio.get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(@portfolio.client_id, current_user))
+    campaigns = Portfolio.get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(client_id, current_user))
     campaign_ids = []
 
     #TODO: This can be improved later by indexing all of the campaign names in Redis in a SET
@@ -26,7 +26,7 @@ class Portfolio < ActiveRecord::Base
     end
 
     if campaign_ids.present?
-      @portfolio.campaigns = campaign_ids.join(",")
+      self.campaigns = campaign_ids.join(",")
     end
   end
 

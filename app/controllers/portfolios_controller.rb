@@ -37,7 +37,7 @@ class PortfoliosController < ApplicationController
     if params[:portfolio][:google].present?
       # Check if file was selected
       csv_file = params[:portfolio][:google].read
-      @portfolio.import_csv(csv_file)
+      @portfolio.import_csv(csv_file, current_user)
     end
     respond_to do |format|
       if @portfolio.save
