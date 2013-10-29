@@ -39,19 +39,24 @@ class PortfoliosController < ApplicationController
     campaign_names = []
     CSV.parse(csv_file).each_with_index do |row, idx|
       #This is to remove the first and second row as well as the totals on the last row
-      next if idx == 0 or idx == 1 or row[0].start_with?("Total")
+      next if idx == 0 or idx == 1 or row[1] == "--"
       campaign_names << row[1] # Check headers for this?
     end
-    # Do redis search for campaign names
-    # Save campaign names to campaign attribute
 
-    $redis.pipelined do
-      Redis::Namespace.new(customer_id, :redis => $redis).tap do |namespaced|
-        namespaced.keys
+    campaigns = Portfolio.get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(@portfolio.client_id, current_user))
+    campaign_ids = []
 
+    campaign_names.each do |campaign_name|
+      campaigns.each do |id, campaign|
+        if campaign["name"] == campaign_name
+          campaign_ids << id
+        end
       end
     end
-    binding.pry
+
+    if campaign_ids.present?
+      @portfolio.campaigns = campaign_ids.join(",")
+    end
 
     respond_to do |format|
       if @portfolio.save
