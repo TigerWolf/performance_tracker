@@ -33,6 +33,8 @@
         .control-group
           = f.label "Google Export Upload"
           .note Will replace with those contained in uploaded file
+          .note
+            =link_to "Click here to see how to export from google", "/example-import.png"
           .control
             .input-file= f.file_field :google
         .control-group
