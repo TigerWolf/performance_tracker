@@ -17,12 +17,8 @@ class Portfolio < ActiveRecord::Base
     #TODO: This can be improved later by indexing all of the campaign names in Redis in a SET
     # The benefit is mostly for performance and removing the need to use the Redis command KEYS
     # It would also mean that the entire campaign hashes would not need to be fetched for this query
-    campaign_names.each do |campaign_name|
-      campaigns.each do |id, campaign|
-        if campaign["name"] == campaign_name
-          campaign_ids << id
-        end
-      end
+    campaigns.each do |id, campaign|
+      campaign_ids << id if campaign_names.include?(campaign["name"])
     end
 
     if campaign_ids.present?
