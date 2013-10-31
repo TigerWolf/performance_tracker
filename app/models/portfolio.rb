@@ -7,8 +7,9 @@ class Portfolio < ActiveRecord::Base
     campaign_names = []
     CSV.parse(file).each_with_index do |row, idx|
       #This is to remove the first and second row as well as the totals on the last few rows
-      next if idx == 0 or idx == 1 or row[1] == "--"
-      campaign_names << row[1] # Campaign name is always in second column
+      campaign_name_column = 1
+      next if idx == 0 or idx == 1 or row[campaign_name_column] == "--"
+      campaign_names << row[campaign_name_column] # Campaign name is always in second column
     end
 
     campaigns = Portfolio.get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(client_id, current_user))
