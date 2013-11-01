@@ -5,16 +5,18 @@ class Portfolio < ActiveRecord::Base
 
   def import_csv(file, current_user)
     campaign_names = []
+    campaign_name_column = 1
+
     CSV.parse(file).each_with_index do |row, idx|
       #This is to remove the first and second row as well as the totals on the last few rows
-      campaign_name_column = 1
-      next if idx == 0 or idx == 1 or row[campaign_name_column] == "--"
+      next if idx == 0
+      next if idx == 1
+      next if row[campaign_name_column] == "--"
       campaign_names << row[campaign_name_column] # Campaign name is always in second column
     end
 
     campaigns = Portfolio.get_campaigns(PortfolioSupport::RedisQuery.refresh_redis_store(client_id, current_user))
     campaign_ids = []
-
     #TODO: This can be improved later by indexing all of the campaign names in Redis in a SET
     # The benefit is mostly for performance and removing the need to use the Redis command KEYS
     # It would also mean that the entire campaign hashes would not need to be fetched for this query
