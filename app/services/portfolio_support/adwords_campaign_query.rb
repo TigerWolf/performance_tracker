@@ -72,7 +72,9 @@ module PortfolioSupport
         redis_namespace.pipelined do
           CSV.parse(report_data, :headers => report_headers).each_with_index do |row, idx|
             #This is to remove the first and second row as well as the totals on the last row
-            next if idx == 0 or idx == 1 or row[0].start_with?("Total")
+            next if idx == 0
+            next if idx == 1
+            next if row[0].start_with?("Total")
             RedisQuery.store_result redis_namespace, row
           end
         end
