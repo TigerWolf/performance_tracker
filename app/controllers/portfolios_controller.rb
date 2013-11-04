@@ -34,6 +34,11 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
 
+    if params[:portfolio][:google].present?
+      # Check if file was selected
+      csv_file = params[:portfolio][:google].read
+      @portfolio.import_csv(csv_file, current_user)
+    end
     respond_to do |format|
       if @portfolio.save
         format.html { redirect_to portfolios_path, notice: 'Portfolio was successfully created.' }
