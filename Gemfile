@@ -7,9 +7,6 @@ gem 'rails', '4.0.0'
 # Heroku Gem - instead of being injected
 gem 'rails_12factor', group: :production
 
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.0'
-
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
@@ -42,6 +39,9 @@ gem 'oauth2'
 gem 'thin'
 
 group :development do
+  gem 'guard-livereload', require: false
+  gem 'rack-livereload'
+  gem 'rb-fsevent',       require: false
 end
 
 # Testing
@@ -67,6 +67,12 @@ gem 'font-awesome-rails'
 gem 'haml'
 gem 'select2-rails'
 
+# These need to be outside the :assets group
+# https://github.com/Compass/compass-rails/issues/19
+gem 'sass', github: 'nex3/sass', ref: '05c6872a834bbf1ea92e8e7d7da05ee4222d24bd'
+gem 'sass-rails'
+gem 'compass',       '~> 0.13.alpha.10'
+gem 'compass-rails', '~> 2.0.alpha.0'
 
 gem 'curb'
 

@@ -14,3 +14,9 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Config files
+config/redis.yml
+
+# Assets compiled by Compass
+public/assets/*
