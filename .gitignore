@@ -20,3 +20,6 @@ config/redis.yml
 
 # Assets compiled by Compass
 public/assets/*
+
+# Sass/Haml/CoffeeScript cache
+.sass-cache/*
