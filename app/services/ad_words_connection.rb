@@ -1,7 +1,7 @@
 class AdWordsConnection
 
   def self.version
-    return :v201306
+    return :v201309
   end
 
   # Returns an API object.
